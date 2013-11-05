@@ -1,15 +1,19 @@
 extends layout
 
+block head
+  link(rel='stylesheet', href='/stylesheets/login_page.css')
+
 block content
-  h1 Library Management System
+  #main
+    h1 Library Management System
 
-  #username
-    label Username: 
-    input(type="textbox")
-  #password
-    label Password: 
-    input(type="textbox")
+    #user
+      label Username: 
+      input(type="textbox", id="username")
+    #pass
+      label Password: 
+      input(type="textbox", id="password")
 
-  button(id="login") Log In
+    button(id="login") Log In
 
-  script(src="http://code.jquery.com/jquery-latest.min.js")
+    script(src="http://code.jquery.com/jquery-latest.min.js")
