@@ -1,57 +1,69 @@
 var pg = require('pg');
 var conString = process.env.DATABASE_URL || "postgress://node:pass@localhost:5432/Library"
 
+var dropQuery = "DROP TABLE IF EXISTS customer, book";
+var tableQuery = "CREATE TABLE customer \
+        (account_no int,       /* customer account number */ \
+         username text,        /* customer user id */ \
+         password text,        /* customer password */ \
+         last_name text,       /* customer last name */ \
+         first_name text,      /* customer first name */ \
+         street text,          /* customer street address */ \
+         city text,            /* customer city */ \
+         state text,           /* customer state */ \
+         zip int,              /* customer zip */ \
+         email text,           /* customer email address */ \
+         admin boolean)";      /*  does customer have admin rights */
+var adminQuery = "INSERT INTO customer ( account_no, username, password, admin) \
+            VALUES ( 0, 'admin', 'admin', true)";
+var bookQuery = "CREATE TABLE book \
+        (ispn int,               /* book id */ \
+         title text,             /* book title */ \
+         author_last text,       /* author last name */ \
+         author_first text,      /* author first name */ \
+         cover text,             /* address of book cover jpeg */ \
+         sample text,            /* address of book sample pdf */ \
+         genre text,             /* book genre */ \
+         total_copies int,       /* total copies of book */ \
+         avail_copies int)";     /* avail copies of book */
+
 pg.connect(conString, function(err, client, done) {
   if (err) {
     return console.error('error fetching client from pool', err);
   }
-  client.query('CREATE TABLE customer \
-    (account_no int, \      /* customer account number */
-     username text, \       /* customer user id */
-     password text, \       /* customer password */
-     last_name text, \      /* customer last name */
-     first_name text, \     /* customer first name */
-     street text, \         /* customer street address */
-     city text, \           /* customer city */
-     state string, \        /* customer state */
-     zip int, \             /* customer zip */
-     email text, \          /* customer email address */
-     admin boolean, \)',    /*  does customer have admin rights */
-      function(err, results) {
-      //call 'done()' to release the client back to the pool
-      done();
 
+  client.query(dropQuery, function(err, results) {
+    done();
+    if (err) {
+      return console.error('error deleting old tables', err);
+    }
+
+    client.query(tableQuery, function(err, results) {
+      done();
       if (err) {
         return console.error('error creating customer table', err);
       }
-  });
 
-  client.query('CREATE TABLE book \
-    (ispn int, \              /* book id */
-     title text, \            /* book title */
-     author_last text, \      /* author last name */
-     author_first text, \     /* author first name */
-     cover string, \          /* address of book cover jpeg */
-     sample string, \         /* address of book sample pdf */
-     genre text, \            /* book genre */
-     total_copies int, \      /* total copies of book */
-     avail_copies int)',      /* avail copies of book */
-    function(err, results) {
-      //call 'done()' to release the client back to the pool
-      done();
+      client.query(adminQuery, function(err, results) {
+        done();
+        if (err) {
+          return console.error('error creating admin', err);
+        }
+        client.query(bookQuery, function(err, results) {
+          //call 'done()' to release the client back to the pool
+          done();
 
-      if (err) {
-        return console.error('error creating book table', err);
-      }
-
-  client.query('INSERT INTO customer ( account_no, username, password, admin) \
-    VALUES ( 0, "admin", "admin", true)', function(err, results) {
-      //call 'done()' to release the client back to the pool
-      done();
-
-      if (err) {
-        return console.error('error creating admin', err);
-      }
-  });
+          if (err) {
+            return console.error('error creating book table', err);
+          }
+          exit();
+        });
+      });
+    });
   });
 });
+
+function exit() {
+  console.log("Schema completed.");
+  process.exit(code=0);
+}
