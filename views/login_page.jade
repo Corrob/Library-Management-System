@@ -5,15 +5,17 @@ block head
 
 block content
   #main
-    h1 Library Management System
+    h1=title
+    label(id="update_label")
 
     #user
-      label Username: 
+      label Username:
       input(type="textbox", id="username")
     #pass
-      label Password: 
+      label Password:
       input(type="textbox", id="password")
 
     button(id="login") Log In
 
     script(src="http://code.jquery.com/jquery-latest.min.js")
+    script(src="/js/login_page.js")
