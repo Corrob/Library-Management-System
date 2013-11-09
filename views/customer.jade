@@ -3,6 +3,10 @@ extends layout
 block content
   #main
     h1=title
+    if admin
+      p admin
+    else
+      p customer
     button(id="logout") Logout
 
     script(src='/js/customer.js');
