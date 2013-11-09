@@ -1,11 +1,14 @@
 
 
 exports.login_page = function(req, res) {
-  res.render('login_page', { title : "Library Management System Log In"});
+  if (req.cookies.username == undefined) {
+    res.render('login_page', { title : "Library Management System Log In"});
+  } else {
+    res.redirect('/customer');
+  }
 };
 
 // TODO(cory): move database function into own module
-// TODO(cory): add cookies to verify user
 exports.process_login = function(pg, dbString) {
 	return function(req, res) {
     var username = req.query.username;
@@ -23,6 +26,7 @@ exports.process_login = function(pg, dbString) {
         }
 
         if (results.rows.length > 0) {
+          res.cookie('username', username, { maxAge: 900000, httpOnly: true });
           res.json({redirect : '/customer'})
         } else {
           res.json({form: 'Invalid username/password.'});
@@ -37,5 +41,14 @@ getLoginQuery = function(username, password) {
 }
 
 exports.customer = function(req, res) {
-  res.render('customer', {title : "Customer"});
+  if (req.cookies.username == undefined) {
+    res.redirect('/');
+  } else {
+    res.render('customer', {title : "Customer"});
+  }
+};
+
+exports.logout = function(req, res) {
+  res.clearCookie('username');
+  res.json({redirect : '/'});
 };

@@ -21,6 +21,8 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(express.cookieParser());
+app.use(express.session({ secret: 'lib-secret-852' }));
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,6 +35,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.login_page);
 app.get('/login', routes.process_login(pg, dbString));
 app.get('/customer', routes.customer);
+app.get('/logout', routes.logout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Server listening on port ' + app.get('port'));
