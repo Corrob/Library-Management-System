@@ -4,6 +4,8 @@ exports.login_page = function(req, res) {
   res.render('login_page', { title : "Library Management System Log In"});
 };
 
+// TODO(cory): move database function into own module
+// TODO(cory): add cookies to verify user
 exports.process_login = function(pg, dbString) {
 	return function(req, res) {
     var username = req.query.username;
