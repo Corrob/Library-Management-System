@@ -34,3 +34,6 @@ exports.logout = function(req, res) {
   res.clearCookie('username');
   res.json({redirect : '/'});
 };
+
+exports.new_user = function(req, res) {
+};

@@ -5,8 +5,9 @@ block content
     h1=title
     if admin
       p admin
+      button(id="new_user") New User
     else
       p customer
-    button(id="logout") Logout
+    button(id="logout") Log Out
 
     script(src='/js/customer.js');

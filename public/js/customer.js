@@ -4,3 +4,10 @@ $("#logout").click(function() {
       window.location.href = data.redirect;
     });
 });
+
+$("#new_user").click(function() {
+  $.get('/new_user', {},
+    function(data, textStatus) {
+
+    })
+});
