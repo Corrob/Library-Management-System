@@ -7,9 +7,6 @@ var express = require('express');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-var pg = require('pg');
-
-var dbString = process.env.DATABASE_URL || "postgress://node:pass@localhost:5432/Library"
 
 var app = express();
 
@@ -33,7 +30,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.login_page);
-app.get('/login', routes.process_login(pg, dbString));
+app.get('/login', routes.process_login);
 app.get('/customer', routes.customer);
 app.get('/logout', routes.logout);
 

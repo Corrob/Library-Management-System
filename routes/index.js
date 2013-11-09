@@ -1,4 +1,4 @@
-
+var database = require('./database.js');
 
 exports.login_page = function(req, res) {
   if (req.cookies.username == undefined) {
@@ -8,37 +8,17 @@ exports.login_page = function(req, res) {
   }
 };
 
-// TODO(cory): move database function into own module
-exports.process_login = function(pg, dbString) {
-	return function(req, res) {
-    var username = req.query.username;
-    var password = req.query.password;
-
-    pg.connect(dbString, function(err, client, done) {
-      if (err) {
-        return console.error('error fetching client from pool', err);
+exports.process_login = function(req, res) {
+  var verified = database.verifyLogin(req.query.username, req.query.password,
+    function(verified) {
+      if (verified == true) {
+        res.cookie('username', req.query.username, { maxAge: 900000, httpOnly: true });
+        res.json({redirect : '/customer'});
+      } else {
+        res.json({form: 'Invalid username/password.'});
       }
-
-      client.query(getLoginQuery(username, password), function(err, results) {
-        done();
-        if (err) {
-          return console.error('error checking username and password', err);
-        }
-
-        if (results.rows.length > 0) {
-          res.cookie('username', username, { maxAge: 900000, httpOnly: true });
-          res.json({redirect : '/customer'})
-        } else {
-          res.json({form: 'Invalid username/password.'});
-        }
-      });
     });
-	};
 };
-
-getLoginQuery = function(username, password) {
-  return "SELECT username, password FROM customer WHERE username='" + username + "' AND password='" + password + "'";
-}
 
 exports.customer = function(req, res) {
   if (req.cookies.username == undefined) {
