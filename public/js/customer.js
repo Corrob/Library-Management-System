@@ -6,7 +6,7 @@ $("#logout").click(function() {
 });
 
 $("#new_user").click(function() {
-  $.get('/new_user', {},
+  $.get('/new_user', {username : 'test1', password : '1234'},
     function(data, textStatus) {
 
     })

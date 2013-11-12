@@ -36,4 +36,5 @@ exports.logout = function(req, res) {
 };
 
 exports.new_user = function(req, res) {
+  
 };
