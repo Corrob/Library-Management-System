@@ -4,17 +4,17 @@ block head
   link(rel='stylesheet', href='/stylesheets/login_page.css')
 
 block content
-  #main
+  #container
     h1=title
     label(id="update_label")
 
-    #user
-      label Username:
-      input(type="textbox", id="username")
-    #pass
-      label Password:
-      input(type="textbox", id="password")
+    div(class="inputLines")
+      label(for="username") Username:
+      input(type="text", id="username")
+    div(class="inputLines")
+      label(for="password") Password:
+      input(type="text", id="password")
 
-    button(id="login") Log In
+    button(id="login", class="loginButton") Log In
 
     script(src="/js/login_page.js")
