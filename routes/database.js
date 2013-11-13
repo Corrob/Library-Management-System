@@ -32,7 +32,7 @@ module.exports = {
       client.query(getAdminQuery(username), function(err, results) {
         done();
         if (err) {
-          return console.error('error checking username and password', err);
+          return console.error('error checking admin username', err);
         }
 
         if (results.rows.length > 0) {
