@@ -1,6 +1,6 @@
 var pg = require("pg");
 
-var dbString = process.env.DATABASE_URL || "postgress://node:pass@localhost:5432/Library"
+var dbString = process.env.DATABASE_URL || "postgres://node:pass@localhost:5432/Library"
 
 module.exports = {
   verifyLogin: function(username, password, callback) {
