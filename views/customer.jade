@@ -4,23 +4,23 @@ block head
   link(rel='stylesheet', href='/stylesheets/customer_page.css')
 
 block content
-  .mainContainer
-    .hudContainer
+  #mainContainer
+    #hudContainer
       if admin
         p
           | Welcome, User <strong>(Admin)</strong>
       else
 
 
-      button(id="logout" class="logOutButton") Log Out
-    .contentContainer
-      .content
-        button(id="filter" class="filterButton") Filter
-        .bookShelf
+      button(id="logout") Log Out
+    #contentContainer
+      #content
+        button(id="filter") Filter
+        #bookShelf
           p
             | This is where all the books go!
-      .options
-        p.optionsLabel
+      #options
+        #optionsLabel
           | Options
         button(id="new_book" class="optionButtons") Add New Book
         button(id="new_user" class="optionButtons") Add New Customer

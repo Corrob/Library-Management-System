@@ -1,4 +1,4 @@
-.mainContainer {
+#mainContainer {
   margin-left: auto;
   margin-right: auto;
   width: 90%;
@@ -14,18 +14,18 @@
   background: linear-gradient(to bottom, rgba(127,142,147,1) 0%,rgba(190,203,211,1) 99%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7f8e93', endColorstr='#becbd3',GradientType=0 ); /* IE6-9 */
 }
-.hudContainer {
+#hudContainer {
   padding: 10px;
   text-align: right;
   border-bottom: 1px solid;
 }
-.contentContainer {
+#contentContainer {
 }
-.content {
+#content {
   padding: 10px;
   display: inline-block;
 }
-.bookShelf {
+#bookShelf {
   margin: 10px;
   padding: 10px;
   display: block;
@@ -33,7 +33,7 @@
   width: 400px;
   height: 600px;
 }
-.options {
+#options {
   padding: 10px 10px 0px 10px;
   display: inline-block;
   border-left: 1px solid;
@@ -47,7 +47,7 @@
   width: 155px;
 }
 
-.logOutButton {
+#logout {
   width: 128px;
 }
 
@@ -98,14 +98,14 @@ button:active {
   top:1px;
 }
 
-.filterButton {
+#filter {
   padding: 0px;
   margin-left: 10px;
   width: 422px;
   font-size: 20px;
 }
 
-.optionsLabel {
+#optionsLabel {
   font-size: 16px;
   font-weight: bold;
 }
