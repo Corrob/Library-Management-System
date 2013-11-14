@@ -8,9 +8,8 @@ block content
     .hudContainer
       if admin
         p
-          | Welcome, User <strong>(Admin)</strong>
+          | Welcome, #{username} <strong>(Admin)</strong>
       else
-
 
       button(id="logout" class="logOutButton") Log Out
     .contentContainer
@@ -22,6 +21,7 @@ block content
       .options
         p.optionsLabel
           | Options
+
         button(id="new_book" class="optionButtons") Add New Book
         button(id="new_user" class="optionButtons") Add New Customer
 

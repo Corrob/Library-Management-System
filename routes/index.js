@@ -25,7 +25,8 @@ exports.customer = function(req, res) {
     res.redirect('/');
   } else {
     database.isAdmin(req.cookies.username, function(adminValue) {
-      res.render('customer', {title : "Customer", admin : adminValue});
+      res.render('customer', {title : "Customer",
+        admin : adminValue, username : req.cookies.username});
     });
   }
 };
