@@ -22,7 +22,7 @@
   padding: 10px;
   display: block;
   border: 1px solid;
-  width: 600px;
+  width: 400px;
   height: 600px;
 }
 .options {
@@ -92,8 +92,8 @@ button:active {
 
 .filterButton {
   padding: 0px;
-  margin-left: 11px;
-  width: 620px;
+  margin-left: 10px;
+  width: 422px;
   font-size: 20px;
 }
 
