@@ -23,6 +23,7 @@ module.exports = {
       });
     });
   },
+
   isAdmin: function(username, callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
@@ -42,6 +43,21 @@ module.exports = {
         }
       });
     });
+  },
+
+  addNewUser: function(userData) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getNewUserQuery(userData), function(err, results) {
+        done();
+        if (err) {
+          return console.error('error adding a user', err);
+        }
+      });
+    });
   }
 };
 
@@ -51,4 +67,24 @@ getLoginQuery = function(username, password) {
 
 getAdminQuery = function(username) {
   return "SELECT username, admin FROM customer WHERE username='" + username + "'";
+};
+
+getNewUserQuery = function(userData) {
+  var query = "INSERT INTO customer (";
+
+  // Add columns to query
+  for (var dataName in userData) {
+    query += dataName + ",";
+  }
+  query = query.substring(0, query.length - 1); // Remove last comma
+
+  query += ") VALUES (";
+
+  // Add column values to query
+  for (var dataName in userData) {
+    query += userData[dataName] + ",";
+  }
+
+  query += ")";
+  return query;
 };
