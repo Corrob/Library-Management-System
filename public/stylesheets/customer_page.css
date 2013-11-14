@@ -1,0 +1,103 @@
+.mainContainer {
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+  border: 1px solid;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #888888;
+}
+.hudContainer {
+  padding: 10px;
+  text-align: right;
+  border-bottom: 1px solid;
+}
+.contentContainer {
+}
+.content {
+  padding: 10px;
+  display: inline-block;
+}
+.bookShelf {
+  margin: 10px;
+  padding: 10px;
+  display: block;
+  border: 1px solid;
+  width: 600px;
+  height: 600px;
+}
+.options {
+  padding: 10px 10px 0px 10px;
+  display: inline-block;
+  border-left: 1px solid;
+  float: right;
+  height: 688px;
+  text-align: center;
+}
+.optionButtons {
+  margin-top: 10px;
+  display: block;
+  width: 155px;
+}
+
+.logOutButton {
+  width: 128px;
+}
+
+/* This button was generated using CSSButtonGenerator.com */
+button {
+  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  box-shadow:inset 0px 1px 0px 0px #ffffff;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #c2c2c2) );
+  background:-moz-linear-gradient( center top, #ededed 5%, #c2c2c2 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#c2c2c2');
+  background-color:#ededed;
+  -webkit-border-top-left-radius:0px;
+  -moz-border-radius-topleft:0px;
+  border-top-left-radius:0px;
+  -webkit-border-top-right-radius:0px;
+  -moz-border-radius-topright:0px;
+  border-top-right-radius:0px;
+  -webkit-border-bottom-right-radius:0px;
+  -moz-border-radius-bottomright:0px;
+  border-bottom-right-radius:0px;
+  -webkit-border-bottom-left-radius:0px;
+  -moz-border-radius-bottomleft:0px;
+  border-bottom-left-radius:0px;
+  text-indent:0;
+  border:1px solid #cfcfcf;
+  display:inline-block;
+  color:#050105;
+  font-family:arial;
+  font-size:15px;
+  font-weight:bold;
+  font-style:normal;
+  height:36px;
+  line-height:36px;
+  width:175px;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:0px 0px 0px #ffffff;
+}
+button:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c2c2c2), color-stop(1, #ededed) );
+  background:-moz-linear-gradient( center top, #c2c2c2 5%, #ededed 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c2c2c2', endColorstr='#ededed');
+  background-color:#c2c2c2;
+} 
+button:active {
+  position:relative;
+  top:1px;
+}
+
+.filterButton {
+  padding: 0px;
+  margin-left: 11px;
+  width: 620px;
+  font-size: 20px;
+}
+
+.optionsLabel {
+  font-size: 16px;
+  font-weight: bold;
+}

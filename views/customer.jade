@@ -1,13 +1,28 @@
 extends layout
 
-block content
-  #main
-    h1=title
-    if admin
-      p admin
-      button(id="new_user") New User
-    else
-      p customer
-    button(id="logout") Log Out
+block head
+  link(rel='stylesheet', href='/stylesheets/customer_page.css')
 
-    script(src='/js/customer.js');
+block content
+  .mainContainer
+    .hudContainer
+      if admin
+        p
+          | Welcome, User <strong>(Admin)</strong>
+      else
+
+
+      button(id="logout" class="logOutButton") Log Out
+    .contentContainer
+      .content
+        button(id="filter" class="filterButton") Filter
+        .bookShelf
+          p
+            | This is where all the books go!
+      .options
+        p.optionsLabel
+          | Options
+        button(id="new_book" class="optionButtons") Add New Book
+        button(id="new_user" class="optionButtons") Add New Customer
+
+  script(src='/js/customer.js');
