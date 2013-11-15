@@ -37,11 +37,13 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  database.addNewData(req.body, "customer");
-  res.send(200);
+  database.addNewData(req.body, "customer", function(success) {
+    res.json({completed: success});
+  });
 };
 
 exports.new_book = function(req, res) {
-  database.addNewData(req.body, "book");
-  res.send(200);
+  database.addNewData(req.body, "book", function(success) {
+    res.json({completed: success});
+  });
 };
