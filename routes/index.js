@@ -36,6 +36,6 @@ exports.logout = function(req, res) {
   res.json({redirect : '/'});
 };
 
-exports.new_user = function(req, res) {
-  
+exports.new_customer = function(req, res) {
+  res.send(200);
 };

@@ -7,11 +7,21 @@ $("#logout").click(function() {
     });
 });
 
-$("#new_user").click(function() {
-  $.get('/new_user', {username : 'test1', password : '1234'},
-    function(data, textStatus) {
+$("#new_customer").click(function() {
+  clearHiddenForms();
+  $("#new_customer_form").show();
+});
 
-    })
+$("#submit_new_customer").click(function() {
+  $.post('/new_customer', {username : $("#username").val(), 
+                           password : $("#password").val()},
+    function(data, textStatus) {
+      clearHiddenForms();
+    });
+});
+
+$(".cancel").click(function() {
+  clearHiddenForms();
 });
 
 $("#filter").click(function() {
@@ -34,3 +44,8 @@ $("#filter").click(function() {
 
   }
 });
+
+var clearHiddenForms = function() {
+  $("input:text").val("");
+  $(".hiddenForm").hide();
+};
