@@ -39,7 +39,7 @@ $("#submit_new_book").click(function() {
     });
 });
 
-$("#cancel").click(function() {
+$(".cancel").click(function() {
   clearHiddenForms();
 });
 

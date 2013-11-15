@@ -31,7 +31,7 @@ block content
             label(for="password" class="inputLineLabels") Password:
             input(type="text", id="password", style="display: inline-block;")
           button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
-          button(id="cancel" class="optionButtons hiddenFormButtons") Cancel
+          button(class="optionButtons hiddenFormButtons cancel") Cancel
         .hiddenForm#new_book_form(style="display: none;")
           .inputLines
             label(for="isbn" class="inputLineLabels") ISBN:
@@ -49,7 +49,7 @@ block content
             label(for="copies" class="inputLineLabels") Copies:
             input(type="text", id="copies", style="display: inline-block;")
           button(id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
-          button(id="cancel" class="optionButtons hiddenFormButtons") Cancel
+          button(class="optionButtons hiddenFormButtons cancel") Cancel
       #options
         #optionsLabel
           | Options
