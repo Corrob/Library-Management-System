@@ -4,8 +4,8 @@ block head
   link(rel='stylesheet', href='/stylesheets/customer_page.css')
 
 block content
-  .mainContainer
-    .hudContainer
+  #mainContainer
+    #hudContainer
       if admin
         p
           | Welcome, #{username} <strong>(Admin)</strong>
@@ -13,11 +13,11 @@ block content
         p
           | Welcome, #{username}
 
-      button(id="logout" class="logOutButton") Log Out
-    .contentContainer
-      .content
-        button(id="filter" class="filterButton") Filter
-        .bookShelf
+      button(id="logout") Log Out
+    #contentContainer
+      #content
+        button(id="filter") Filter
+        #bookShelf
           p
             | This is where all the books go!
       if admin
@@ -28,8 +28,8 @@ block content
           .inputLines
             label(for="password") Password:
             input(type="text", id="password")
-      .options
-        p.optionsLabel
+      #options
+        #optionsLabel
           | Options
         if admin
           button(id="new_book" class="optionButtons") Add New Book

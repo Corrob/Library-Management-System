@@ -1,4 +1,4 @@
-$("#login").click(function() {
+var loginFunc = function() {
   $.get("/login", 
     {'username': $("#username").val(), 'password': $("#password").val()},
     function(data, textStatus) {
@@ -8,4 +8,12 @@ $("#login").click(function() {
         $("#update_label").text(data.form);
       }
     });
+}
+
+$("#login").click(loginFunc);
+
+$(document).keypress(function(e) {
+  if(e.which == 13 && $('input').focus()) {
+    loginFunc();
+  }
 });
