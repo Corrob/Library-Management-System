@@ -33,6 +33,14 @@
   width: 400px;
   height: 600px;
 }
+.hiddenForm {
+  margin: 10px;
+  padding: 10px;
+  display: inline-block;
+  border: 1px solid;
+  width: 300px;
+  height: 600px;
+}
 .options {
   padding: 10px 10px 0px 10px;
   display: inline-block;
@@ -108,4 +116,12 @@ button:active {
 .optionsLabel {
   font-size: 16px;
   font-weight: bold;
+}
+
+div.inputLines {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

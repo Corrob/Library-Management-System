@@ -20,11 +20,19 @@ block content
         .bookShelf
           p
             | This is where all the books go!
+      if admin
+        .hiddenForm#newcustomerform(style="display: none")
+          .inputLines
+            label(for="username") Username:
+            input(type="text", id="username")
+          .inputLines
+            label(for="password") Password:
+            input(type="text", id="password")
       .options
         p.optionsLabel
           | Options
-
-        button(id="new_book" class="optionButtons") Add New Book
-        button(id="new_user" class="optionButtons") Add New Customer
+        if admin
+          button(id="new_book" class="optionButtons") Add New Book
+          button(id="new_user" class="optionButtons") Add New Customer
 
   script(src='/js/customer.js');
