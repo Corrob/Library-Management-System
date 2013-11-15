@@ -19,8 +19,7 @@ var adminQuery = "INSERT INTO customer ( account_no, username, password, admin) 
 var bookQuery = "CREATE TABLE book \
         (isbn int,               /* book id */ \
          title text,             /* book title */ \
-         author_last text,       /* author last name */ \
-         author_first text,      /* author first name */ \
+         author text,            /* author name */ \
          cover text,             /* address of book cover jpeg */ \
          sample text,            /* address of book sample pdf */ \
          genre text,             /* book genre */ \
