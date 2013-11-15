@@ -37,6 +37,6 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  database.addNewCustomer(req.body);
+  database.addNewData(req.body, "customer");
   res.send(200);
 };

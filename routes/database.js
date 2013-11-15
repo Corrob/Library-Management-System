@@ -45,15 +45,13 @@ module.exports = {
     });
   },
 
-  addNewCustomer: function(customerData) {
+  addNewData: function(data, table) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
         return console.error('error fetching client from pool', err);
       }
 
-      console.log(getNewCustomerQuery(customerData));
-
-      client.query(getNewCustomerQuery(customerData), function(err, results) {
+      client.query(getNewDataQuery(data, table), function(err, results) {
         done();
         if (err) {
           return console.error('error adding a user', err);
@@ -71,11 +69,11 @@ getAdminQuery = function(username) {
   return "SELECT username, admin FROM customer WHERE username='" + username + "'";
 };
 
-getNewCustomerQuery = function(customerData) {
-  var query = "INSERT INTO customer (";
+getNewDataQuery = function(data, table) {
+  var query = "INSERT INTO " + table + " (";
 
   // Add columns to query
-  for (var dataName in customerData) {
+  for (var dataName in data) {
     query += dataName + ",";
   }
   query = query.substring(0, query.length - 1); // Remove last comma
@@ -83,8 +81,8 @@ getNewCustomerQuery = function(customerData) {
   query += ") VALUES (";
 
   // Add column values to query
-  for (var dataName in customerData) {
-    query += "'" + customerData[dataName] + "',";
+  for (var dataName in data) {
+    query += "'" + data[dataName] + "',";
   }
   query = query.substring(0, query.length - 1); // Remove last comma
 
