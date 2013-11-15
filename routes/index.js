@@ -40,3 +40,8 @@ exports.new_customer = function(req, res) {
   database.addNewData(req.body, "customer");
   res.send(200);
 };
+
+exports.new_book = function(req, res) {
+  database.addNewData(req.body, "book");
+  res.send(200);
+};

@@ -17,7 +17,7 @@ var tableQuery = "CREATE TABLE customer \
 var adminQuery = "INSERT INTO customer ( account_no, username, password, admin) \
             VALUES ( 0, 'admin', 'admin', true)";
 var bookQuery = "CREATE TABLE book \
-        (isbn int,               /* book id */ \
+        (isbn text,              /* book id */ \
          title text,             /* book title */ \
          author text,            /* author name */ \
          cover text,             /* address of book cover jpeg */ \

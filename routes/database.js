@@ -54,7 +54,7 @@ module.exports = {
       client.query(getNewDataQuery(data, table), function(err, results) {
         done();
         if (err) {
-          return console.error('error adding a user', err);
+          return console.error('error adding data', err);
         }
       });
     });

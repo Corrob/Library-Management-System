@@ -32,6 +32,24 @@ block content
             input(type="text", id="password", style="display: inline-block;")
           button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
           button(id="cancel" class="optionButtons hiddenFormButtons") Cancel
+        .hiddenForm#new_book_form(style="display: none;")
+          .inputLines
+            label(for="isbn" class="inputLineLabels") ISBN:
+            input(type="text", id="isbn", style="display: inline-block;")
+          .inputLines
+            label(for="title" class="inputLineLabels") Title:
+            input(type="text", id="title", style="display: inline-block;")
+          .inputLines
+            label(for="author" class="inputLineLabels") Author:
+            input(type="text", id="author", style="display: inline-block;")
+          .inputLines
+            label(for="genre" class="inputLineLabels") Genre:
+            input(type="text", id="genre", style="display: inline-block;")
+          .inputLines
+            label(for="copies" class="inputLineLabels") Copies:
+            input(type="text", id="copies", style="display: inline-block;")
+          button(id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
+          button(id="cancel" class="optionButtons hiddenFormButtons") Cancel
       #options
         #optionsLabel
           | Options

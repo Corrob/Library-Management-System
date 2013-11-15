@@ -13,10 +13,27 @@ $("#new_customer").click(function() {
   $("#new_customer_form").show();
 });
 
+$("#new_book").click(function() {
+  clearHiddenForms();
+  $("#new_book_form").show();
+});
+
 $("#submit_new_customer").click(function() {
   $.post('/new_customer', {username : $("#username").val(), 
                            password : $("#password").val(),
                            admin: false},
+    function(data, textStatus) {
+      clearHiddenForms();
+    });
+});
+
+$("#submit_new_book").click(function() {
+  $.post('/new_book', {isbn : $("#isbn").val(), 
+                       title : $("#title").val(),
+                       author: $("#author").val(),
+                       genre: $("#genre").val(),
+                       total_copies: $("#copies").val(),
+                       avail_copies: $("#copies").val()},
     function(data, textStatus) {
       clearHiddenForms();
     });
