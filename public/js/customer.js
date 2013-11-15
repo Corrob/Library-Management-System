@@ -15,7 +15,8 @@ $("#new_customer").click(function() {
 
 $("#submit_new_customer").click(function() {
   $.post('/new_customer', {username : $("#username").val(), 
-                           password : $("#password").val()},
+                           password : $("#password").val(),
+                           admin: false},
     function(data, textStatus) {
       clearHiddenForms();
     });
