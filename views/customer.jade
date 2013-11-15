@@ -4,7 +4,7 @@ block head
   link(rel='stylesheet', href='/stylesheets/customer_page.css')
 
 block content
-  script.(type="text/javascript")
+  script.
    adminBoolean = #{admin};
   #mainContainer
     #hudContainer
@@ -30,8 +30,8 @@ block content
           .inputLines
             label(for="password" class="inputLineLabels") Password:
             input(type="text", id="password", style="display: inline-block;")
-          button(id="submit_new_customer" class="optionButtons") Sumbit New Customer
-          button(id="cancel" class="optionButtons") Cancel
+          button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
+          button(id="cancel" class="optionButtons hiddenFormButtons") Cancel
       #options
         #optionsLabel
           | Options
