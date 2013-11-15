@@ -5,9 +5,8 @@ $("#logout").click(function() {
     });
 });
 
-$("#new_user").click(function() {
-  $.get('/new_user', {username : 'test1', password : '1234'},
+$("#new_customer").click(function() {
+  $.get('/new_customer', {username : 'test1', password : '1234'},
     function(data, textStatus) {
-
     })
 });

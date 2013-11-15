@@ -33,7 +33,7 @@ app.get('/', routes.login_page);
 app.get('/login', routes.process_login);
 app.get('/customer', routes.customer);
 app.get('/logout', routes.logout);
-app.get('/newuser', routes.new_user);
+app.get('/new_customer', routes.new_customer);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Server listening on port ' + app.get('port'));
