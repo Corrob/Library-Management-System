@@ -20,6 +20,7 @@ var bookQuery = "CREATE TABLE book \
         (isbn text,              /* book id */ \
          title text,             /* book title */ \
          author text,            /* author name */ \
+         description text,       /* book description */ \
          cover text,             /* address of book cover jpeg */ \
          sample text,            /* address of book sample pdf */ \
          genre text,             /* book genre */ \

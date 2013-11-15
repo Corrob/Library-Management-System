@@ -31,6 +31,7 @@ $("#submit_new_book").click(function() {
   $.post('/new_book', {isbn : $("#isbn").val(), 
                        title : $("#title").val(),
                        author: $("#author").val(),
+                       description: $("#description").val(),
                        genre: $("#genre").val(),
                        total_copies: $("#copies").val(),
                        avail_copies: $("#copies").val()},
@@ -86,6 +87,9 @@ $("#filter").click(function() {
 
 var clearHiddenForms = function() {
   $(".hiddenForm input[type=text]").each(function() {
+    $(this).val("");  
+  });
+  $(".hiddenForm textarea").each(function() {
     $(this).val("");  
   });
   $(".hiddenForm").hide();
