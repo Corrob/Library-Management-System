@@ -4,6 +4,8 @@ block head
   link(rel='stylesheet', href='/stylesheets/customer_page.css')
 
 block content
+  script(type="text/javascript")
+   adminBoolean = #{admin};
   #mainContainer
     #hudContainer
       if admin
@@ -21,15 +23,15 @@ block content
           p
             | This is where all the books go!
       if admin
-        .hiddenForm#new_customer_form(style="display: none")
+        .hiddenForm#new_customer_form(style="display: none;")
           .inputLines
-            label(for="username") Username:
-            input(type="text", id="username")
+            label(for="username" class="inputLineLabels") Username:
+            input(type="text", id="username", style="display: inline-block;")
           .inputLines
-            label(for="password") Password:
-            input(type="text", id="password")
-          button(id="submit_new_customer" class="formButtons") Sumbit New Customer
-          button(class="cancel formButtons") Cancel
+            label(for="password" class="inputLineLabels") Password:
+            input(type="text", id="password", style="display: inline-block;")
+          button(id="submit_new_customer" class="optionButtons") Sumbit New Customer
+          button(id="cancel" class="optionButtons") Cancel
       #options
         #optionsLabel
           | Options
