@@ -21,13 +21,15 @@ block content
           p
             | This is where all the books go!
       if admin
-        .hiddenForm#newcustomerform(style="display: none")
+        .hiddenForm#new_customer_form(style="display: none")
           .inputLines
             label(for="username") Username:
             input(type="text", id="username")
           .inputLines
             label(for="password") Password:
             input(type="text", id="password")
+          button(id="submit_new_customer" class="formButtons") Sumbit New Customer
+          button(class="cancel formButtons") Cancel
       #options
         #optionsLabel
           | Options

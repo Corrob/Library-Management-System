@@ -37,5 +37,5 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  
+  res.send(200);
 };
