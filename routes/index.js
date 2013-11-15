@@ -9,10 +9,10 @@ exports.login_page = function(req, res) {
 };
 
 exports.process_login = function(req, res) {
-  var verified = database.verifyLogin(req.query.username, req.query.password,
+  var verified = database.verifyLogin(req.body.username, req.body.password,
     function(verified) {
       if (verified == true) {
-        res.cookie('username', req.query.username, { maxAge: 900000, httpOnly: true });
+        res.cookie('username', req.body.username, { maxAge: 900000, httpOnly: true });
         res.json({redirect : '/customer'});
       } else {
         res.json({form: 'Invalid username/password.'});
@@ -37,5 +37,6 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
+  console.log(req.body);
   res.send(200);
 };

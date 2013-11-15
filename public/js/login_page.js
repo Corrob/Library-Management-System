@@ -1,5 +1,5 @@
 var loginFunc = function() {
-  $.get("/login", 
+  $.post("/login", 
     {'username': $("#username").val(), 'password': $("#password").val()},
     function(data, textStatus) {
       if (data.redirect) {

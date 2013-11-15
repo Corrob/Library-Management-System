@@ -30,9 +30,9 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.login_page);
-app.get('/login', routes.process_login);
 app.get('/customer', routes.customer);
-app.get('/logout', routes.logout);
+app.post('/login', routes.process_login);
+app.post('/logout', routes.logout);
 app.post('/new_customer', routes.new_customer);
 
 http.createServer(app).listen(app.get('port'), function(){
