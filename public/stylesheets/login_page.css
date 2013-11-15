@@ -46,6 +46,7 @@ label {
 
 /* This button was generated using CSSButtonGenerator.com */
 button {
+  margin-top: 10px;
   -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
   -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
   box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -100,7 +101,6 @@ button:active {
   margin-top: 20px;
   border: 1px solid #c4c4c4;
   font-size: 16px;
-  font-style: italic;
   padding: 4px 4px 4px 4px;
   border-radius: 4px;
   -moz-border-radius: 4px;
@@ -108,4 +108,12 @@ button:active {
   box-shadow: 0px 0px 8px #d9d9d9;
   -moz-box-shadow: 0px 0px 8px #d9d9d9;
   -webkit-box-shadow: 0px 0px 8px #d9d9d9;
-} 
+}
+
+.formTextbox:focus { 
+  outline: none;
+  border: 1px solid #7bc1f7;
+  box-shadow: 0px 0px 8px #7bc1f7;
+  -moz-box-shadow: 0px 0px 8px #7bc1f7;
+  -webkit-box-shadow: 0px 0px 8px #7bc1f7;
+}
