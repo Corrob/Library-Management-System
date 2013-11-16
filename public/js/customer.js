@@ -1,5 +1,6 @@
 var searchBarDefault = "Enter query...";
 var bookShelfContent;
+var searchShowing = false;
 
 $("#logout").click(function() {
   $.post('/logout',
@@ -66,44 +67,50 @@ $(".cancel").click(function() {
 });
 
 $("#filter").click(function() {
-  bookShelfContent = $("#bookShelf").html();
-  var filterHtml;
-  filterHtml = "<input type='text' id='searchBar'"
-             + "value='Enter query...' class='searchBar'>"
-             + "<label class='searchLabels'>Search for books by:</label>"
-             + "<div class='radioContainer'>"
-             + "<input type='radio' name='searchFilters' id='bookTitleOption'"
-             + "class='radioLabel' value='byTitle'>"
-             + "<label class='radioLabel' for='bookTitleOption'>"
-             + "Book Title</label></div>"
-             + "<div class='radioContainer'>"
-             + "<input type='radio' name='searchFilters' id='bookAuthorOption'"
-             + "class='radioLabel' value='byAuthor'>"
-             + "<label class='radioLabel' for='bookAuthorOption'>"
-             + "Author Name</label></div>";
-             
-  if (adminBoolean) {
-    filterHtml += "<label class='searchLabels'>"
-               + "Search for customers by:</label>"
+  if (!searchShowing) {
+    bookShelfContent = $("#bookShelf").html();
+    var filterHtml;
+    filterHtml = "<input type='text' id='searchBar'"
+               + "value='Enter query...' class='searchBar'>"
+               + "<label class='searchLabels'>Search for books by:</label>"
                + "<div class='radioContainer'>"
-               + "<input type='radio' name='searchFilters' id='userIdOption'"
-               + "class='radioLabel' value='byId'>"
-               + "<label class='radioLabel' for='userIdOption'>"
-               + "Customer ID</label></div>"
+               + "<input type='radio' name='searchFilters' id='bookTitleOption'"
+               + "class='radioLabel' value='byTitle'>"
+               + "<label class='radioLabel' for='bookTitleOption'>"
+               + "Book Title</label></div>"
                + "<div class='radioContainer'>"
-               + "<input type='radio' name='searchFilters' id='userNameOption'"
-               + "class='radioLabel' value='byName'>"
-               + "<label class='radioLabel' for='userNameOption'>"
-               + "Customer Name</label></div>";
+               + "<input type='radio' name='searchFilters' id='bookAuthorOption'"
+               + "class='radioLabel' value='byAuthor'>"
+               + "<label class='radioLabel' for='bookAuthorOption'>"
+               + "Author Name</label></div>";
+               
+    if (adminBoolean) {
+      filterHtml += "<label class='searchLabels'>"
+                 + "Search for customers by:</label>"
+                 + "<div class='radioContainer'>"
+                 + "<input type='radio' name='searchFilters' id='userIdOption'"
+                 + "class='radioLabel' value='byId'>"
+                 + "<label class='radioLabel' for='userIdOption'>"
+                 + "Customer ID</label></div>"
+                 + "<div class='radioContainer'>"
+                 + "<input type='radio' name='searchFilters' id='userNameOption'"
+                 + "class='radioLabel' value='byName'>"
+                 + "<label class='radioLabel' for='userNameOption'>"
+                 + "Customer Name</label></div>";
+    }
+
+    filterHtml += "<div id='filterButtonsContainer'>"
+               + "<button id='search' class='optionButtons filterButtons'>"
+               +  "Search</button>"
+               +  "<button id='cancelSearch' class='optionButtons filterButtons'>"
+               +  "Cancel</button></div>";
+
+    $("#bookShelf").html(filterHtml); 
+    searchShowing = true;
+  } else {
+    $("#bookShelf").html(bookShelfContent);
+    searchShowing = false;
   }
-
-  filterHtml += "<div id='filterButtonsContainer'>"
-             + "<button id='search' class='optionButtons filterButtons'>"
-             +  "Search</button>"
-             +  "<button id='cancelSearch' class='optionButtons filterButtons'>"
-             +  "Cancel</button></div>";
-
-  $("#bookShelf").html(filterHtml); 
 });
 
 var clearHiddenForms = function() {
@@ -137,6 +144,7 @@ $("#bookShelf").on("focus", "#searchBar", function() {
 
 $("#bookShelf").on("click", "#cancelSearch", function() {
   $("#bookShelf").html(bookShelfContent);
+  searchShowing = false;
 });
 
 $("#bookShelf").on("click", "#search", function() {
