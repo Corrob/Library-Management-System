@@ -13,7 +13,7 @@ var loginFunc = function() {
 $("#login").click(loginFunc);
 
 $(document).keypress(function(e) {
-  if(e.which == 13 && $('input').focus()) {
+  if(e.which == 13 && $("input").focus()) {
     loginFunc();
   }
 });
