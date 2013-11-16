@@ -27,6 +27,8 @@ var bookQuery = "CREATE TABLE book \
          total_copies int,       /* total copies of book */ \
          avail_copies int)";     /* avail copies of book */
 
+console.log(conString);
+
 pg.connect(conString, function(err, client, done) {
   if (err) {
     return console.error('error fetching client from pool', err);
