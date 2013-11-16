@@ -37,8 +37,16 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  database.addNewData(req.body, "customer", function(success) {
-    res.json({completed: success});
+  database.checkData({username: req.body.username}, "customer", function(exists, error) {
+    if (error) {
+      res.json({completed: false, exists: false});
+    } else if (exists) {
+      res.json({completed: true, exists: true});
+    } else { 
+      database.addNewData(req.body, "customer", function(success) {
+        res.json({completed: success, exists: false});
+      });
+    }
   });
 };
 

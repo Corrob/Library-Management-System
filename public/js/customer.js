@@ -23,22 +23,43 @@ $("#submit_new_customer").click(function() {
                            password : $("#password").val(),
                            admin: false},
     function(data, textStatus) {
-      clearHiddenForms();
+      if (data.completed) {
+        if (!data.exists) {
+          clearHiddenForms();
+        } else {
+          $(".updateLabel").text('Username already exists.');
+        }
+      } else {
+        $(".updateLabel").text('Failed to submit new customer.');
+      }
     });
 });
 
 $("#submit_new_book").click(function() {
-  $.post('/new_book', {isbn : $("#isbn").val(), 
-                       title : $("#title").val(),
-                       author: $("#author").val(),
-                       description: $("#description").val(),
-                       genre: $("#genre").val(),
-                       total_copies: $("#copies").val(),
-                       avail_copies: $("#copies").val()},
-    function(data, textStatus) {
-      clearHiddenForms();
-    });
+  if (!isPositiveInt($("#copies").val())) {
+    $(".updateLabel").text('Copies field must be an integer.');
+  } else {
+    $.post('/new_book', {isbn : $("#isbn").val(), 
+                         title : $("#title").val(),
+                         author: $("#author").val(),
+                         description: $("#description").val(),
+                         genre: $("#genre").val(),
+                         total_copies: $("#copies").val(),
+                         avail_copies: $("#copies").val()},
+      function(data, textStatus) {
+        if (data.completed) {
+          clearHiddenForms();
+        } else {
+          $(".updateLabel").text('Failed to submit new book.');
+        }
+      });
+  }
 });
+
+var isPositiveInt = function(str) {
+  // Regex check
+  return /^[1-9][0-9]*$/.test(str);
+}
 
 $(".cancel").click(function() {
   clearHiddenForms();
@@ -91,6 +112,9 @@ var clearHiddenForms = function() {
   });
   $(".hiddenForm textarea").each(function() {
     $(this).val("");  
+  });
+  $(".hiddenForm .updateLabel").each(function() {
+    $(this).text("");
   });
   $(".hiddenForm").hide();
 };

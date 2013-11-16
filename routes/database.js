@@ -52,21 +52,21 @@ module.exports = {
   checkData: function(data, table, callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
-        callback(false);
+        callback(false, true);
         return console.error('error fetching client from pool', err);
       }
 
-      client.query(getAdminQuery(username), function(err, results) {
+      client.query(getCheckDataQuery(data, table), function(err, results) {
         done();
         if (err) {
-          callback(false);
+          callback(false, true);
           return console.error('error checking data', err);
         }
 
         if (results.rows.length > 0) {
-          callback(true);
+          callback(true, false);
         } else {
-          callback(false);
+          callback(false, false);
         }
       });
     });
@@ -109,15 +109,15 @@ getCheckDataQuery = function(data, table) {
   }
   query = query.substring(0, query.length - 1); // Remove last comma
 
-  query += " FROM " + table + "WHERE ";
+  query += " FROM " + table + " WHERE ";
 
   // Add column values to query
   for (var dataName in data) {
-    query += dataName "='" + data[dataName] + "',";
+    query += dataName + "='" + data[dataName] + "' AND ";
   }
-  query = query.substring(0, query.length - 1); // Remove last comma
+  query = query.substring(0, query.length - 5); // Remove last AND
 
-  query += ");";
+  query += ";";
   return query;
 };
 

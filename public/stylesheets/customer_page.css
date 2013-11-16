@@ -262,3 +262,11 @@ input[type=radio]:checked + label.radioLabel:before {
   text-align: center;  
   line-height: 18px;  
 }
+
+.updateLabel {
+  color: #FF0000;
+}
+
+#description {
+  resize: none;
+}
