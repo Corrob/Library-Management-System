@@ -1,5 +1,5 @@
 var pg = require('pg');
-var conString = process.env.DATABASE_URL || "postgress://node:pass@localhost:5432/Library"
+var conString = process.env.DATABASE_URL || "postgress://node:pass@localhost:5432/Library";
 
 var dropQuery = "DROP TABLE IF EXISTS customer, book";
 var tableQuery = "CREATE TABLE customer \
@@ -28,6 +28,7 @@ var bookQuery = "CREATE TABLE book \
          avail_copies int)";     /* avail copies of book */
 
 console.log(conString);
+console.log(process.env.DATABASE_URL);
 
 pg.connect(conString, function(err, client, done) {
   if (err) {
