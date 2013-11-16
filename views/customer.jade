@@ -5,7 +5,7 @@ block head
 
 block content
   script.
-   adminBoolean = #{admin};
+    adminBoolean = #{admin};
   #mainContainer
     #hudContainer
       if admin
@@ -46,7 +46,7 @@ block content
             input(type="text", id="author", style="display: inline-block;", class="formTextbox")
           .inputLines
             label(for="description" class="inputLineLabels") Description:
-            textarea(id="description", style="display: inline-block;", class="formTextbox", rows=5, columns=30)
+            textarea(id="description", style="display: inline-block;", class="formTextbox descriptionBox", rows=5, columns=30)
           .inputLines
             label(for="genre" class="inputLineLabels") Genre:
             input(type="text", id="genre", style="display: inline-block;", class="formTextbox")

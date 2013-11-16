@@ -183,6 +183,11 @@ div.inputLines {
   -webkit-box-shadow: 0px 0px 8px #7bc1f7;
 }
 
+.descriptionBox {
+  width: 51%;
+  vertical-align: -80px;
+}
+
 label.inputLineLabels {
   display: inline-block;
   text-align: left;
