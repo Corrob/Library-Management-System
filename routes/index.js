@@ -62,3 +62,15 @@ exports.new_book = function(req, res) {
     res.json({completed: success});
   });
 };
+
+exports.delete_customer = function(req, res) {
+  database.deleteData(req.body, "customer", function(success) {
+    res.json({deleted: success});
+  });
+}
+
+exports.delete_book = function(req, res) {
+  database.deleteData(req.body, "book", function(success) {
+    res.json({deleted: success});
+  });
+}
