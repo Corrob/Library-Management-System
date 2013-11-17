@@ -1,5 +1,17 @@
 var database = require('./database.js');
 
+var makeJSONObject = function(results, type) {
+  var jsonObject = new Object();
+  for (var i = 0; i < results.length; i++) {
+    var row = new Object();
+    for (var column in results[i]) {
+      row[column] = results[i][column];
+    }
+    jsonObject[type + i] = row;
+  }
+  return jsonObject;
+};
+
 exports.login_page = function(req, res) {
   if (req.cookies.username == undefined) {
     res.render('login_page', { title : "Library Management System Log In"});
@@ -62,3 +74,39 @@ exports.new_book = function(req, res) {
     res.json({completed: success});
   });
 };
+
+exports.get_books = function(req, res) {
+  if (typeof req.body.keywords == "undefined" 
+    && typeof req.body.column == "undefined") {
+    database.getAllBooks(req.body.admin, function(data) {
+      if (data.length > 0) {
+        var jsonBooksObject = makeJSONObject(data, "book");
+        res.json(jsonBooksObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  } else {
+    database.getBooksByKeyword(req.body,
+      function(data) {
+      if (data.length > 0) {
+        var jsonBooksObject = makeJSONObject(data, "book");
+        res.json(jsonBooksObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  }
+};
+
+exports.get_users = function(req, res) {
+  database.getUsersByKey(req.body,
+    function(data) {
+    if (data.length > 0) {
+      var jsonUsersObject = makeJSONObject(data, "user");
+      res.json(jsonUsersObject);
+    } else {
+      res.json(new Object());
+    }
+  });
+}
