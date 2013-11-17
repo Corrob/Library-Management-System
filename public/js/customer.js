@@ -5,6 +5,103 @@ var selectedFilter = "";
 var bookShelfUpdateLabel = "<div id='bookShelfUpdateContainer'>"
 												 + "<label id='bookShelfUpdateLabel'></label></div>";
 
+var loadBooks = function() {
+  $.post('/get_books',
+    {admin: adminBoolean},
+    function(data, textStatus) {
+      printBookData(data);
+    });
+};
+
+var loadCustomers = function() {
+	$.post('/get_users',
+    function(data, textStatus) {
+      printUserData(data);
+    });
+}
+
+var printBookData = function(data) {
+  if (!jQuery.isEmptyObject(data)) {
+	  var content = bookShelfUpdateLabel;
+	  content += "<div id='bookShelfList'>";
+	  for (var book in data) {
+	    content += "<div class='shelfEntry'>"
+	    for (var info in data[book]) {
+	      switch (info) {
+	        case "title":
+	          content += "<a class='bookTitle'>" + data[book][info]
+	                  + "</a>";
+	          break;
+	        case "description":
+	          content += "<p class='bookDescription'>" + data[book][info]
+	                  + "</p>"
+	          break;
+	      }
+	    }
+	    if (adminBoolean) {
+	      content += "<button id='delete" + book 
+	              + "' class='optionButtons'>Delete"
+	              + "</button>";
+	    } else {
+	      content += "<button id='checkout" + book 
+	              + "' class='optionButtons optionButtons'>Check Out"
+	              + "</button>";
+	    }
+
+	    content += "</div>";
+	  }
+	  content += "</div>";
+	  $("#bookShelf").html(content);
+	  searchShowing = false;
+	} else {
+		$("#bookShelfUpdateLabel").text("No results found!");
+	}
+};
+
+var printUserData = function(data) {
+	if (!jQuery.isEmptyObject(data)) {
+	  var content = bookShelfUpdateLabel;
+	  content += "<div id='bookShelfList'>";
+	  for (var user in data) {
+	    content += "<div class='shelfEntry'>"
+	    for (var info in data[user]) {
+	      switch (info) {
+	        case "account_no":
+	          content += "<a class='accountNumber'>ID: " + data[user][info]
+	                  + "</a>";
+	          break;
+	        case "username":
+	          content += "<span class='userInfo'>Username: " + data[user][info]
+	                  + "</span>";
+	          break;
+          case "last_name":
+	        	content += "<span class='userInfo'>Last Name: " + data[user][info]
+	                  + "</span>";
+            break;
+          case "first_name":
+          	content += "<span class='userInfo'>Fisrt Name: " + data[user][info]
+	                  + "</span>";
+	          break;
+          case "admin":
+	        	content += "<span class='userInfo'>Admin: " + data[user][info]
+	                  + "</span>";
+	          break;   
+	      }
+	    }
+      content += "<button id='deleteUser" + data[user]["account_no"]
+              + "' class='optionButtons'>Delete"
+              + "</button>";
+
+	    content += "</div>";
+	  }
+	  content += "</div>";
+	  $("#bookShelf").html(content);
+	  searchShowing = false;
+	} else {
+		$("#bookShelfUpdateLabel").text("No results found!");
+	}
+};
+
 $("#logout").click(function() {
   $.post('/logout',
     function(data, textStatus) {
@@ -217,94 +314,12 @@ $("#bookShelf").on("change", "input[name='searchFilters']", function() {
   });
 });
 
-var loadBooks = function() {
-  $.post('/get_books',
-    {admin: adminBoolean},
-    function(data, textStatus) {
-      printBookData(data);
-    });
-};
+$("#list_books").click(function() {
+	loadBooks();
+});
 
-var printBookData = function(data) {
-  if (!jQuery.isEmptyObject(data)) {
-	  var content = bookShelfUpdateLabel;
-	  content += "<div id='bookShelfList'>";
-	  for (var book in data) {
-	    content += "<div class='shelfEntry'>"
-	    for (var info in data[book]) {
-	      switch (info) {
-	        case "title":
-	          content += "<span class='bookTitle'>" + data[book][info]
-	                  + "</span>";
-	          break;
-	        case "description":
-	          content += "<p class='bookDescription'>" + data[book][info]
-	                  + "</p>"
-	          break;
-	      }
-	    }
-	    if (adminBoolean) {
-	      content += "<button id='delete" + book 
-	              + "' class='optionButtons'>Delete"
-	              + "</button>";
-	    } else {
-	      content += "<button id='checkout" + book 
-	              + "' class='optionButtons optionButtons'>Check Out"
-	              + "</button>";
-	    }
-
-	    content += "</div>";
-	  }
-	  content += "</div>";
-	  $("#bookShelf").html(content);
-	  searchShowing = false;
-	} else {
-		$("#bookShelfUpdateLabel").text("No results found!");
-	}
-}
-
-var printUserData = function(data) {
-	if (!jQuery.isEmptyObject(data)) {
-	  var content = bookShelfUpdateLabel;
-	  content += "<div id='bookShelfList'>";
-	  for (var user in data) {
-	    content += "<div class='shelfEntry'>"
-	    for (var info in data[user]) {
-	      switch (info) {
-	        case "account_no":
-	          content += "<span class='accountNumber'>ID: " + data[user][info]
-	                  + "</span>";
-	          break;
-	        case "username":
-	          content += "<span class='userInfo'>Username: " + data[user][info]
-	                  + "</span>";
-	          break;
-          case "last_name":
-	        	content += "<span class='userInfo'>Last Name: " + data[user][info]
-	                  + "</span>";
-            break;
-          case "first_name":
-          	content += "<span class='userInfo'>Fisrt Name: " + data[user][info]
-	                  + "</span>";
-	          break;
-          case "admin":
-	        	content += "<span class='userInfo'>Admin: " + data[user][info]
-	                  + "</span>";
-	          break;   
-	      }
-	    }
-      content += "<button id='deleteUser" + data[user]["account_no"]
-              + "' class='optionButtons'>Delete"
-              + "</button>";
-
-	    content += "</div>";
-	  }
-	  content += "</div>";
-	  $("#bookShelf").html(content);
-	  searchShowing = false;
-	} else {
-		$("#bookShelfUpdateLabel").text("No results found!");
-	}
-}
+$("#list_users").click(function() {
+	loadCustomers();
+});
 
 $(document).ready(loadBooks);

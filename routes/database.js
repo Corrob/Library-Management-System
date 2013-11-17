@@ -153,6 +153,25 @@ module.exports = {
     });
   },
 
+  getAllUsers: function(callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getAllUsersQuery("customer"), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading customer table', err);
+        }
+
+        callback(results.rows);
+      });
+    });
+  },
+
   getUsersByKey: function(data, callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
@@ -247,6 +266,13 @@ getBooksByKeywordQuery = function(table, admin, keywords, column) {
   }
 
   query += ";";
+  return query;
+}
+
+getAllUsersQuery = function(table) {
+  var query = "SELECT account_no, username, last_name, first_name, admin FROM"
+            + " " + table + ";";
+  
   return query;
 }
 

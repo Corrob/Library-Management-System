@@ -39,7 +39,7 @@
   border: 1px solid;
   width: 400px;
   height: 600px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -359,15 +359,22 @@ div.checkboxInputLine {
 div.shelfEntry {
   padding: 10px;
   margin-bottom: 25px;
-  background: rgba(145, 145, 145, 0.2);
-  box-shadow: 0px 0px 10px 2px #7BC1F7;
+  background: rgba(123, 193, 247, 0.2);
+  box-shadow: 0px 0px 10px 2px #FFFFFF;
   border: 1px solid #FFFFFF;
+  border-radius: 5px;
 }
 
-span.bookTitle {
+a.bookTitle {
   display: block;
   font-weight: bold;
+  color: #000000;
   font-size: 16px;
+}
+
+a.bookTitle:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 p.bookDescription {
@@ -379,10 +386,16 @@ p.bookDescription {
   text-shadow: 0px 0px 5px #FFFFFF;
 }
 
-span.accountNumber {
+a.accountNumber {
   display: block;
   font-weight: bold;
+  color: #000000;
   font-size: 16px;
+}
+
+a.accountNumber:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 span.userInfo {

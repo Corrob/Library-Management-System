@@ -100,13 +100,25 @@ exports.get_books = function(req, res) {
 };
 
 exports.get_users = function(req, res) {
-  database.getUsersByKey(req.body,
-    function(data) {
-    if (data.length > 0) {
-      var jsonUsersObject = makeJSONObject(data, "user");
-      res.json(jsonUsersObject);
-    } else {
-      res.json(new Object());
-    }
-  });
+  if (typeof req.body.key == "undefined"
+    && typeof req.body.column == "undefined") {
+    database.getAllUsers(function(data) {
+      if (data.length > 0) {
+        var jsonUsersObject = makeJSONObject(data, "user");
+        res.json(jsonUsersObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  } else {
+    database.getUsersByKey(req.body,
+      function(data) {
+      if (data.length > 0) {
+        var jsonUsersObject = makeJSONObject(data, "user");
+        res.json(jsonUsersObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  }
 }
