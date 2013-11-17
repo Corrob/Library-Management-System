@@ -72,6 +72,25 @@ module.exports = {
     });
   },
 
+  deleteData: function(data, table, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false);
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getDeleteDataQuery(data, table), function(err, results) {
+        done();
+        if (err) {
+          callback(false);
+          return console.error('error checking data', err);
+        }
+        
+        callback(results.rowCount == 1);
+      });
+    });
+  },
+
   addNewData: function(data, table, callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
@@ -131,6 +150,21 @@ getCheckDataQuery = function(data, table) {
     query += dataName + ",";
   }
   query = query.substring(0, query.length - 1); // Remove last comma
+
+  query += " FROM " + table + " WHERE ";
+
+  // Add column values to query
+  for (var dataName in data) {
+    query += dataName + "='" + data[dataName] + "' AND ";
+  }
+  query = query.substring(0, query.length - 5); // Remove last AND
+
+  query += ";";
+  return query;
+};
+
+getDeleteDataQuery = function(data, table) {
+  var query = "DELETE ";
 
   query += " FROM " + table + " WHERE ";
 
