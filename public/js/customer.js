@@ -22,7 +22,14 @@ $("#new_book").click(function() {
 $("#submit_new_customer").click(function() {
   $.post('/new_customer', {username : $("#username").val(), 
                            password : $("#password").val(),
-                           admin: false},
+                           last_name : $("#last_name").val(),
+                           first_name : $("#first_name").val(),
+                           street : $("#street").val(),
+                           city : $("#city").val(),
+                           state : $("#state").val(),
+                           zip : $("#zip").val(),
+                           email : $("#email").val(),
+                           admin: $("#admin").prop("checked")},
     function(data, textStatus) {
       if (data.completed) {
         if (!data.exists) {
@@ -116,6 +123,9 @@ $("#filter").click(function() {
 var clearHiddenForms = function() {
   $(".hiddenForm input[type=text]").each(function() {
     $(this).val("");  
+  });
+  $(".hiddenForm input[type=checkbox]").each(function() {
+    $(this).prop("checked", false);
   });
   $(".hiddenForm textarea").each(function() {
     $(this).val("");  
