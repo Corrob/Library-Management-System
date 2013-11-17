@@ -82,12 +82,12 @@ $("#filter").click(function() {
                + "<label class='searchLabels'>Search for books by:</label>"
                + "<div class='radioContainer'>"
                + "<input type='radio' name='searchFilters' id='bookTitleOption'"
-               + "class='radioLabel' value='byTitle'>"
+               + "value='byTitle'>"
                + "<label class='radioLabel' for='bookTitleOption'>"
                + "Book Title</label></div>"
                + "<div class='radioContainer'>"
                + "<input type='radio' name='searchFilters' id='bookAuthorOption'"
-               + "class='radioLabel' value='byAuthor'>"
+               + "value='byAuthor'>"
                + "<label class='radioLabel' for='bookAuthorOption'>"
                + "Author Name</label></div>";
                
@@ -96,12 +96,12 @@ $("#filter").click(function() {
                  + "Search for customers by:</label>"
                  + "<div class='radioContainer'>"
                  + "<input type='radio' name='searchFilters' id='userIdOption'"
-                 + "class='radioLabel' value='byId'>"
+                 + "value='byId'>"
                  + "<label class='radioLabel' for='userIdOption'>"
                  + "Customer ID</label></div>"
                  + "<div class='radioContainer'>"
                  + "<input type='radio' name='searchFilters' id='userNameOption'"
-                 + "class='radioLabel' value='byName'>"
+                 + "value='byName'>"
                  + "<label class='radioLabel' for='userNameOption'>"
                  + "Customer Name</label></div>";
     }

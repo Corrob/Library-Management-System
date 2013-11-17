@@ -157,6 +157,7 @@ div.inputLines {
   margin-right: auto;
   margin-top: 10px;
   margin-bottom: 20px;
+  width: 90%;
 }
 
 /* CSS for search bar taken from html-generator.weebly.com */
@@ -183,7 +184,8 @@ div.inputLines {
 }
 
 .descriptionBox {
-  width: 51%;
+  margin-left: 2px;
+  width: 56%;
   vertical-align: -80px;
 }
 
@@ -280,4 +282,57 @@ input[type=radio]:checked + label.radioLabel:before {
 
 #description {
   resize: none;
+}
+
+/* Checkbox input CSS written based on blog post on www.hongkiat.com */
+label.checkBoxLabel {
+  display: inline-block;  
+  cursor: pointer;  
+  position: relative;  
+  padding-left: 40px;  
+  margin-right: 15px;  
+  font-size: 14px;  
+}
+
+input[type=checkbox] {  
+  display: none;  
+}
+
+label.checkBoxLabel:before {  
+  content: "";  
+  display: inline-block;  
+
+  width: 16px;  
+  height: 16px;  
+
+  margin-right: 10px;  
+  position: absolute;  
+  left: 0;  
+  bottom: 1px;  
+  background-color: #aaa;  
+  box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
+}  
+
+
+label.checkBoxLabel:before {
+  border-radius: 3px;
+}
+
+input[type=checkbox]:checked + label.checkBoxLabel:before {
+  content: "\2713";  
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);  
+  font-size: 15px;  
+  color: #f3f3f3;  
+  text-align: center;  
+  line-height: 15px;
+}
+
+div.checkboxInputLine {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 90%;
+  text-align: center;
 }

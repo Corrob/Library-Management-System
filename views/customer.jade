@@ -52,9 +52,9 @@ block content
           .inputLines
             label(for="email" class="inputLineLabels") Email:
             input(type="text", id="email", style="display: inline-block;", class="formTextbox")
-          .inputLines
-            label(for="admin" class="inputLineLabels") Admin:
-            input(type="checkbox", id="admin", style="display: inline-block;", class="formTextbox")
+          .checkboxInputLine
+            input(type="checkbox", id="admin")
+            label(for="admin" class="checkBoxLabel") Admin
           button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
           button(class="optionButtons hiddenFormButtons cancel") Cancel
         .hiddenForm#new_book_form(style="display: none;")
