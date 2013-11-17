@@ -37,14 +37,21 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  database.checkData({username: req.body.username}, "customer", function(exists, error) {
-    if (error) {
-      res.json({completed: false, exists: false});
-    } else if (exists) {
-      res.json({completed: true, exists: true});
-    } else { 
-      database.addNewData(req.body, "customer", function(success) {
-        res.json({completed: success, exists: false});
+  database.getMaxAccountNo(function(max) {
+    if (max === -1) {
+      res.json({completed:false, exists: false});
+    } else {
+      req.body["account_no"] = max + 1;
+      database.checkData({username: req.body.username}, "customer", function(exists, error) {
+        if (error) {
+          res.json({completed: false, exists: false});
+        } else if (exists) {
+          res.json({completed: true, exists: true});
+        } else { 
+          database.addNewData(req.body, "customer", function(success) {
+            res.json({completed: success, exists: false});
+          });
+        }
       });
     }
   });

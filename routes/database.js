@@ -89,6 +89,29 @@ module.exports = {
         callback(true);
       });
     });
+  },
+
+  getMaxAccountNo: function(callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(-1);
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getMaxAccountNoQuery(), function(err, results) {
+        done();
+        if (err) {
+          callback(-1);
+          return console.error('error adding data', err);
+        }
+
+        if (results.rows.length > 0) {
+          callback(results.rows[0].max);
+        } else {
+          callback(-1);
+        }
+      });
+    });
   }
 };
 
@@ -140,4 +163,8 @@ getNewDataQuery = function(data, table) {
 
   query += ");";
   return query;
+};
+
+getMaxAccountNoQuery = function() {
+  return "SELECT MAX(account_no) FROM customer";
 };
