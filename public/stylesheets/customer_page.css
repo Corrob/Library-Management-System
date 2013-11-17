@@ -185,8 +185,14 @@ div.inputLines {
 }
 
 .descriptionBox {
-  width: 53%;
-  vertical-align: -80px;
+  vertical-align: text-top;
+  width: 151px;
+}
+
+#descriptionBoxLabel {
+  display: inline-block;
+  text-align: left;
+  width: 100px;
 }
 
 label.inputLineLabels {
