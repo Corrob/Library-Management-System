@@ -27,8 +27,7 @@ var bookQuery = "CREATE TABLE book \
          total_copies int,       /* total copies of book */ \
          avail_copies int)";     /* avail copies of book */
 
-console.log(conString);
-console.log(process.env.DATABASE_URL);
+console.log("Database connection string: " + conString);
 
 pg.connect(conString, function(err, client, done) {
   if (err) {
