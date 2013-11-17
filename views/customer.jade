@@ -31,6 +31,27 @@ block content
           .inputLines
             label(for="password" class="inputLineLabels") Password:
             input(type="text", id="password", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="first_name" class="inputLineLabels") First Name:
+            input(type="text", id="first_name", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="last_name" class="inputLineLabels") Last Name:
+            input(type="text", id="last_name", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="street" class="inputLineLabels") Street:
+            input(type="text", id="street", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="city" class="inputLineLabels") City:
+            input(type="text", id="city", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="state" class="inputLineLabels") State:
+            input(type="text", id="state", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="zip" class="inputLineLabels") Zip:
+            input(type="text", id="zip", style="display: inline-block;", class="formTextbox")
+          .inputLines
+            label(for="admin" class="inputLineLabels") Admin:
+            input(type="checkbox", id="admin", style="display: inline-block;", class="formTextbox")
           button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
           button(class="optionButtons hiddenFormButtons cancel") Cancel
         .hiddenForm#new_book_form(style="display: none;")
