@@ -130,6 +130,7 @@ function fileSelectHandler() {
     oImage.src = e.target.result;
     oImage.onload = function () { // onload event handler
       if (jcrop_api != null) {
+        $(oImage).attr('style','');
         jcrop_api.destroy();
       }
 
@@ -139,12 +140,20 @@ function fileSelectHandler() {
         onSelect: updateInfo,
       }, function(){
         jcrop_api = this;
+        $('.imagePreview').prop('right', getPos($('#new_book_form')).x);
       });
     };
   };
 
   // read selected file as DataURL
   oReader.readAsDataURL(oFile);
+}
+
+function getPos(el) {
+    for (var lx=0, ly=0;
+         el != null;
+         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
+    return {x: lx,y: ly};
 }
 
 $("#filter").click(function() {
