@@ -5,33 +5,48 @@ var selectedFilter = "";
 var searchBarQuery = "";
 var bookShelfUpdateLabel = "<div class='updateContainer'>"
 												 + "<label id='bookShelfUpdateLabel'></label></div>";
+var currentBookCheckedout = false;
+
 var jcrop_api;
 var canSubmitNewBook = true;
 
-var checkoutRequestMaker = function(username, isbn) {
+var checkoutHandlerMaker = function(bookIsbn) {
 	return function() {
-		/*$.post('/checkout_book',
-
-			);*/
+		$.post('/checkout_book',
+			{username: currentUsername,
+			 isbn: bookIsbn
+			},
+			function(data, textStatus) {
+				$("#bookShelf").scrollTop(0);
+				if (data.checkedout) {
+					$("#bookShelfUpdateLabel").text("Book checked out successfully!");
+				} else {
+					$("#bookShelfUpdateLabel").text("Check out unsuccessful: " + data.reason);
+				}
+			});
 	};
 };
 
-var deleteRequestMaker = function(type, identifier) {
+var deleteHandlerMaker = function(type, identifier) {
 	switch(type) {
 		case "book":
 			return function () {
 				$.post('/delete_book',
 					{isbn: identifier},
 					function(data, textStatus) {
+						$("#bookShelf").scrollTop(0);
 						if (data) {
-							// Perform same search as user so the list of books only shows
-							// what the user wanted.
-							if (selectedFilter && searchBarQuery) {
-								performSearch(selectedFilter, searchBarQuery);
-							} else {
-								loadBooks();
-							}
-							$("#bookShelfUpdateLabel").text("Book was deleted successfully!");
+							$("#bookShelfUpdateLabel")
+							.text("Book was deleted successfully! Updating list...");
+							setTimeout(function() {
+								// Perform same search as user so the list of books only shows
+								// what the user wanted.
+								if (selectedFilter && searchBarQuery) {
+									performSearch(selectedFilter, searchBarQuery);
+								} else {
+									loadBooks();
+								}
+							}, 1000);
 						} else {
 							$("#bookShelfUpdateLabel").text("Book deletion was unsuccessful!");
 						}
@@ -43,9 +58,11 @@ var deleteRequestMaker = function(type, identifier) {
 				$.post('/delete_customer',
 				{account_no: identifier},
 				function(data, textStatus) {
+					$("#bookShelf").scrollTop(0);
 					if (data) {
-						loadCustomers();
-						$("#bookShelfUpdateLabel").text("User was deleted successfully!");
+						$("#bookShelfUpdateLabel")
+						.text("User was deleted successfully! Updating list...");
+						setTimeout(loadCustomers, 1000);
 					} else {
 						$("#bookShelfUpdateLabel").text("User deletion was unsuccessful!");
 					}
@@ -64,7 +81,12 @@ var performSearch = function(filter, query) {
          column: "title" 
         },
         function (data, textStatus) {
-          printBookData(data);
+        	if (jQuery.isEmptyObject(data)) {
+        		$("#bookShelfUpdateLabel").text("No results found!");
+        	} else {
+          	printBookData(data);
+          	searchShowing = false;
+          }
         });
       break;
     case "byAuthor":
@@ -74,7 +96,12 @@ var performSearch = function(filter, query) {
          column: "author" 
         },
         function (data, textStatus) {
-          printBookData(data);
+          if (jQuery.isEmptyObject(data)) {
+        		$("#bookShelfUpdateLabel").text("No results found!");
+        	} else {
+          	printBookData(data);
+          	searchShowing = false;
+          }
         });
       break;
 
@@ -84,7 +111,12 @@ var performSearch = function(filter, query) {
     		 column: "account_no"
     		},
     		function (data, textStatus) {
-    			printUserData(data);
+    			if (jQuery.isEmptyObject(data)) {
+        		$("#bookShelfUpdateLabel").text("No results found!");
+        	} else {
+          	printUserData(data);
+          	searchShowing = false;
+          }
     		});
       break;
 
@@ -94,7 +126,12 @@ var performSearch = function(filter, query) {
     		 column: "username"
     		},
     		function (data, textStatus) {
-    			printUserData(data);
+    			if (jQuery.isEmptyObject(data)) {
+        		$("#bookShelfUpdateLabel").text("No results found!");
+        	} else {
+          	printUserData(data);
+          	searchShowing = false;
+          }
     		});
       break;
     default:
@@ -148,22 +185,22 @@ var printBookData = function(data) {
 				        + "' class='optionButtons'>Delete"
 	      				+ "</button>";
 	      $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
-      		deleteRequestMaker("book", data[book]["isbn"]));
+      		deleteHandlerMaker("book", data[book]["isbn"]));
 	    } else {
-	      content += "<button id='checkout" + data[book]["isbn"] 
-	              + "' class='optionButtons'>Check Out"
-	              + "</button>";
-	      $("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
-	      	checkoutRequestMaker()
-	      	)
-	    }
+				content += "<button id='checkoutBook" + data[book]["isbn"]
+				    		+ "' class='optionButtons'>Check Out"
+				  	    + "</button>";
+				$("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
+					checkoutHandlerMaker(data[book]["isbn"]));
+			}
 	    content += "</div>";
-	  }
+		}
 	  content += "</div>";
 	  $("#bookShelf").html(content);
-	  searchShowing = false;
 	} else {
-		$("#bookShelfUpdateLabel").text("No results found!");
+		var content = bookShelfUpdateLabel;
+		$("#bookShelf").html(content);
+		$("#bookShelfUpdateLabel").text("There are currently no books in the library!");
 	}
 };
 
@@ -202,18 +239,17 @@ var printUserData = function(data) {
               + "</button>";
 
     	$("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
-    		deleteRequestMaker("customer", data[user]["account_no"]));
+    		deleteHandlerMaker("customer", data[user]["account_no"]));
 	    content += "</div>";
 	  }
 	  content += "</div>";
 	  $("#bookShelf").html(content);
-	  searchShowing = false;
 	} else {
-		$("#bookShelfUpdateLabel").text("No results found!");
+		var content = bookShelfUpdateLabel;
+		$("#bookShelf").html(content);
+		$("#bookShelfUpdateLabel").text("There are currently no users in the database!");
 	}
 };
-
-
 
 $("#logout").click(function() {
   $.post('/logout',

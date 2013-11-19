@@ -200,15 +200,64 @@ module.exports = {
 
       client.query(getUsersByKeyQuery("customer", data.key, data.column),
         function(err, results) {
+          done();
+          if (err) {
+            callback(new Array());
+            return console.error('error reading customer table', err);
+          }
+
+          callback(results.rows);
+        });
+    }); 
+  },
+
+  checkIfCheckedout: function(data, callback) {
+    var checkedoutBooks;
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(
+        getCheckedoutBookQuery("customer", data.username, data.isbn),
+        function(err, results) {
+          done();
+          if (err) {
+            return console.error('error reading customer table', err);
+          }
+          
+          callback(results.rows.length > 0);
+        });
+    });
+  },
+
+  checkoutBook: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false, " Error connecting to database!");
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getCheckoutQuery("book", data.isbn),
+        function(err, results) {
+          done();
+          if (err) {
+            callback(false, " Error reading database!");  
+            return console.error('error reading customer table', err);
+          }
+        });
+
+      client.query(getAddToCheckedoutBooksQuery("customer", data.username,
+        data.isbn), function(err, results) {
         done();
         if (err) {
-          callback(new Array());
+          callback(false, " Error reading database!");
           return console.error('error reading customer table', err);
         }
 
-        callback(results.rows);
-        });
-    }); 
+        callback(true);
+      });
+    });
   }
 };
 
@@ -315,5 +364,28 @@ getUsersByKeyQuery = function(table, key, column) {
   var query = "SELECT account_no, username, last_name, first_name, admin FROM"
             + " " + table
             + " WHERE " + column + " = " + "'" + key + "';";
+  return query;
+}
+
+getCheckedoutBookQuery = function(table, username, isbn) {
+  var query = "SELECT * FROM " + table
+            + " WHERE username = '" + username + "' AND '" + isbn + "' = ANY "
+            + "(books_checked_out)";
+  query += ";";
+  return query;
+}
+
+getCheckoutQuery = function(table, isbn) {
+  var query = "UPDATE " + table + " SET avail_copies = avail_copies - 1 WHERE "
+            + "isbn = '" + isbn + "' AND avail_copies > 0";
+  query += ";";
+  return query;
+}
+
+getAddToCheckedoutBooksQuery = function(table, username, isbn) {
+  var query = "UPDATE " + table + " SET books_checked_out = array_append("
+            + "books_checked_out, '" + isbn + "') WHERE username = '" + username
+            + "'";
+  query += ";";
   return query;
 }

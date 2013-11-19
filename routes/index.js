@@ -167,3 +167,15 @@ exports.delete_book = function(req, res) {
     res.json({deleted: success});
   });
 };
+
+exports.checkout_book = function(req, res) {
+  database.checkoutBook(req.body, function(success, err) {
+    res.json({checkedout: success, reason: err});
+  });
+};
+
+exports.check_book = function(req, res) {
+  database.checkIfCheckedout(req.body, function(bookState) {
+    res.json({checkedoutState: bookState});
+  });
+};
