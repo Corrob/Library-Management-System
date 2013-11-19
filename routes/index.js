@@ -2,8 +2,15 @@ var database = require('./database.js');
 var gm = require('gm')
   , imageMagick = gm.subClass({ imageMagick: true });
 var s3 = require('s3');
+var knox = require('knox');
 
 var client = s3.createClient({
+  key: "AKIAJTCTMUXCMQT75QOA",
+  secret: "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",
+  bucket: "library_management_system_bucket"
+});
+
+var knoxClient = knox.createClient({
   key: "AKIAJTCTMUXCMQT75QOA",
   secret: "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",
   bucket: "library_management_system_bucket"
