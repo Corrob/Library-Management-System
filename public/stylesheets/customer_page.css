@@ -404,9 +404,22 @@ span.userInfo {
   text-shadow: 0px 0px 5px #FFFFFF;
 }
 
+span.bookInfo {
+  display: block;
+  font-size: 13px;
+}
+
 .imagePreview {
   position: absolute;
   z-index: 1;
   top: 500px;
   right: 400px;
+}
+
+.bookCover {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 150px;
+  height: 150px;
 }
