@@ -346,6 +346,6 @@ div.checkboxInputLine {
 .imagePreview {
   position: absolute;
   z-index: 1;
-  top: 600px;
-  right: 700px;
+  top: 500px;
+  right: 400px;
 }

@@ -2,6 +2,7 @@ var searchBarDefault = "Enter query...";
 var bookShelfContent;
 var searchShowing = false;
 var jcrop_api;
+var canSubmitNewBook = true;
 
 $("#logout").click(function() {
   $.post('/logout',
@@ -47,6 +48,9 @@ $("#submit_new_customer").click(function() {
 function checkNewBookForm() {
   if (!isPositiveInt($("#copies").val())) {
     $(".updateLabel").text('Copies field must be an integer.');
+    return false;
+  } else if (!canSubmitNewBook) {
+    $(".updateLabel").text('Cannot submit invalid image. Please upload a valid image (jpg/png and <1 MB).');
     return false;
   } else {
     return true;
@@ -108,6 +112,8 @@ function fileSelectHandler() {
   var oFile = $('#cover')[0].files[0];
 
   $('.updateLabel').text('');
+  $('.imagePreview').hide();
+  canSubmitNewBook = false;
 
   // check for image type (jpg and png are allowed)
   var rFilter = /^(image\/jpeg|image\/png)$/i;
@@ -121,6 +127,8 @@ function fileSelectHandler() {
     $('.updateLabel').text('File must be less than 1 MB');
     return;
   }
+
+  canSubmitNewBook = true;
 
   // preview element
   var oImage = document.getElementById('preview');
@@ -143,7 +151,7 @@ function fileSelectHandler() {
         onSelect: updateInfo,
       }, function(){
         jcrop_api = this;
-        $('.imagePreview').prop('right', getPos($('#new_book_form')).x);
+        $('.imagePreview').css('right', getRight($('#bookShelf')));
       });
     };
   };
@@ -152,11 +160,8 @@ function fileSelectHandler() {
   oReader.readAsDataURL(oFile);
 }
 
-function getPos(el) {
-    for (var lx=0, ly=0;
-         el != null;
-         lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
-    return {x: lx,y: ly};
+function getRight(el) {
+  return ($(window).width() - (el.offset().left + el.outerWidth()));
 }
 
 $("#filter").click(function() {
