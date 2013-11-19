@@ -13,8 +13,7 @@ var tableQuery = "CREATE TABLE customer \
          state text,           /* customer state */ \
          zip text,             /* customer zip */ \
          email text,           /* customer email address */ \
-         books_checked_out text[], 
-                               /* isbn list of books checked out by customer */
+         books_checked_out text[], /* isbn list of books checked out by customer */ \
          admin boolean)";      /*  does customer have admin rights */
 var adminQuery = "INSERT INTO customer ( account_no, username, password, admin) \
             VALUES ( 0, 'admin', 'admin', true)";
