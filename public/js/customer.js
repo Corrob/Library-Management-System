@@ -88,6 +88,9 @@ var clearHiddenForms = function() {
   $(".hiddenForm .updateLabel").each(function() {
     $(this).text("");
   });
+  $(".hiddenForm input[type=file]").each(function() {
+    $(this).val("");
+  });
   $(".hiddenForm").hide();
   $(".imagePreview").hide();
 };
