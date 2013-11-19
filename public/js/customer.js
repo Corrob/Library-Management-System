@@ -39,12 +39,12 @@ var printBookData = function(data) {
 	      }
 	    }
 	    if (adminBoolean) {
-	      content += "<button id='delete" + book 
+	      content += "<button id='delete" + data[book]["isbn"]
 	              + "' class='optionButtons'>Delete"
 	              + "</button>";
 	    } else {
-	      content += "<button id='checkout" + book 
-	              + "' class='optionButtons optionButtons'>Check Out"
+	      content += "<button id='checkout" + data[book]["isbn"] 
+	              + "' class='optionButtons'>Check Out"
 	              + "</button>";
 	    }
 
@@ -79,7 +79,7 @@ var printUserData = function(data) {
 	                  + "</span>";
             break;
           case "first_name":
-          	content += "<span class='userInfo'>Fisrt Name: " + data[user][info]
+          	content += "<span class='userInfo'>First Name: " + data[user][info]
 	                  + "</span>";
 	          break;
           case "admin":
@@ -262,7 +262,7 @@ $("#bookShelf").on("click", "#search", function() {
     case "byTitle":
       $.post('/get_books',
         {admin: adminBoolean,
-         keywords: $("#searchBar").val(),
+         keywords: $("#searchBar").val().toUpperCase(),
          column: "title" 
         },
         function (data, textStatus) {
@@ -272,7 +272,7 @@ $("#bookShelf").on("click", "#search", function() {
     case "byAuthor":
       $.post('/get_books',
         {admin: adminBoolean,
-         keywords: $("#searchBar").val(),
+         keywords: $("#searchBar").val().toUpperCase(),
          column: "author" 
         },
         function (data, textStatus) {

@@ -248,7 +248,7 @@ getMaxAccountNoQuery = function() {
 };
 
 getAllBooksQuery = function(table, admin) {
-  var query = "SELECT title, description FROM " + table;
+  var query = "SELECT isbn, title, description FROM " + table;
   
   if (admin === "false") {
     query += " WHERE avail_copies > 0";
@@ -258,8 +258,9 @@ getAllBooksQuery = function(table, admin) {
 };
 
 getBooksByKeywordQuery = function(table, admin, keywords, column) {
-  var query = "SELECT title, description FROM " + table
-            + " WHERE position('" + keywords + "' in " + column + ") > 0";
+  var query = "SELECT isbn, title, description FROM " + table
+            + " WHERE position('" + keywords + "' in upper(" + column
+            + ")) > 0";
 
   if (admin === "false") {
     query += " AND avail_copies > 0";
