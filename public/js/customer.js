@@ -30,6 +30,13 @@ var printBookData = function(data) {
 	    content += "<div class='shelfEntry'>"
 	    for (var info in data[book]) {
 	      switch (info) {
+	        case "cover":
+	        	content += "<img class='bookCover' src='" + data[book][info]
+	        					+ "' />";
+	        	break;
+	        case "author":
+	        	content += "<span class='bookInfo'>By " + data[book][info] + "</span>";
+	        	break;
 	        case "title":
 	          content += "<a class='bookTitle'>" + data[book][info]
 	                  + "</a>";
