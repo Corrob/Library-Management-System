@@ -98,6 +98,8 @@ module.exports = {
         return console.error('error fetching client from pool', err);
       }
 
+      console.log(getNewDataQuery(data, table));
+
       client.query(getNewDataQuery(data, table), function(err, results) {
         done();
         if (err) {
