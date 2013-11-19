@@ -20,7 +20,7 @@ var loadCustomers = function() {
     function(data, textStatus) {
       printUserData(data);
     });
-}
+};
 
 var printBookData = function(data) {
   if (!jQuery.isEmptyObject(data)) {
@@ -41,8 +41,7 @@ var printBookData = function(data) {
 	      }
 	    }
 	    if (adminBoolean) {
-	      content += "<button id='delete" + data[book]["isbn"]
-	              + "' class='optionButtons'>Delete"
+	      content += "<button class='optionButtons'>Delete"
 	              + "</button>";
 	    } else {
 	      content += "<button id='checkout" + data[book]["isbn"] 
@@ -90,8 +89,7 @@ var printUserData = function(data) {
 	          break;   
 	      }
 	    }
-      content += "<button id='deleteUser" + data[user]["account_no"]
-              + "' class='optionButtons'>Delete"
+      content += "<button class='optionButtons'>Delete"
               + "</button>";
 
 	    content += "</div>";
