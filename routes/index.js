@@ -79,6 +79,12 @@ exports.new_customer = function(req, res) {
 };
 
 exports.new_book = function(req, res) {
+  // Double check image size
+  if (req.files.cover != null &&
+    req.files.cover.size < 1000 * 1024) {
+    res.json({completed: false});
+  }
+
   // Update copies to match database
   if (req.body.copies != null) {
     req.body["avail_copies"] = req.body.copies;
@@ -86,6 +92,7 @@ exports.new_book = function(req, res) {
     delete req.body.copies;
   }
 
+  // Resize image and upload
   if (req.files.cover != null) {
     if (req.body.x1 != '' && req.body.x2 != '' && 
       req.body.y1 != '' && req.body.y2 != '') {
@@ -102,7 +109,16 @@ exports.new_book = function(req, res) {
           }            
         });
     } else {
-      uploadToS3(req, res);
+      imageMagick(req.files.cover.path)
+        .resize(150, 150)
+        .write(req.files.cover.path, function(err) {
+          if (err) {
+            console.log(err);
+            res.json({completed: false});
+          } else {
+            uploadToS3(req, res);
+          }
+        });
     }
     console.log();
   } else {
