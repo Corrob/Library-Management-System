@@ -218,7 +218,36 @@ exports.delete_customer = function(req, res) {
 };
 
 exports.delete_book = function(req, res) {
+  database.getCoverByIsbn(req.body, function(success, cover) {
+    if (!success) {
+      res.json({deleted: false});
+    } else {
+      if (cover == "/images/no_cover.png") {
+        finishDeleteBook(req, res);
+      } else {
+        cover = removeAmazonUrl(cover); 
+        knoxClient.deleteFile(cover, function(err, resTwo){
+          if (err) {
+            res.json({deleted: false});
+          }
+          finishDeleteBook(req, res);
+        });
+      }
+    }
+  });
+};
+
+function removeAmazonUrl(url) {
+  k = url.indexOf("/");
+  while (k != -1) {
+    url = url.substring(k + 1, url.length);
+    k = url.indexOf("/");
+  }
+  return url;
+}
+
+function finishDeleteBook(req, res) {
   database.deleteData(req.body, "book", function(success) {
     res.json({deleted: success});
   });
-};
+}
