@@ -268,3 +268,8 @@ exports.check_book = function(req, res) {
   });
 };
 
+exports.return_book = function(req, res) {
+  database.returnBook(req.body, function(success, err) {
+    res.json({completed: success, reason: err});
+  });
+};

@@ -262,6 +262,35 @@ module.exports = {
     });
   },
 
+  returnBook: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false, " Error connecting to database!");
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getReturnQuery("book", data.isbn),
+        function(err, results) {
+          done();
+          if (err) {
+            callback(false, " Error reading database!");  
+            return console.error('error reading customer table', err);
+          }
+        });
+
+      client.query(getRemoveFromCheckoutBooksQuery("customer", data.username,
+        data.isbn), function(err, results) {
+        done();
+        if (err) {
+          callback(false, " Error reading database!");
+          return console.error('error reading customer table', err);
+        }
+
+        callback(true);
+      });
+    });
+  },
+
   getCoverByIsbn: function(data, callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
@@ -409,10 +438,26 @@ getCheckoutQuery = function(table, isbn) {
   return query;
 };
 
+getReturnQuery = function(table, isbn) {
+  var query = "UPDATE " + table + " SET avail_copies = avail_copies + 1 WHERE "
+            + "isbn = '" + isbn + "' AND avail_copies > 0";
+  query += ";";
+  return query;
+};
+
 getAddToCheckedoutBooksQuery = function(table, username, isbn) {
   var query = "UPDATE " + table + " SET books_checked_out = array_append("
             + "books_checked_out, '" + isbn + "') WHERE username = '" + username
             + "'";
+  query += ";";
+  return query;
+};
+
+getRemoveFromCheckoutBooksQuery = function(table, username, isbn) {
+  var query = "UPDATE " + table
+      + " SET books_checked_out = array(select x from unnest(books_checked_out) x where x <> '"
+      + isbn + "') WHERE username = '" + username
+      + "'";
   query += ";";
   return query;
 };

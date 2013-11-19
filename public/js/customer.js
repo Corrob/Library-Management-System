@@ -26,6 +26,23 @@ var checkoutHandlerMaker = function(bookIsbn) {
 	};
 };
 
+var returnHandlerMaker = function(bookIsbn) {
+  return function() {
+    $.post('/return_book',
+      {username: currentUsername,
+       isbn: bookIsbn
+      },
+      function(data, textStatus) {
+        $("#bookShelf").scrollTop(0);
+        if (data.completed) {
+          $("#bookShelfUpdateLabel").text("Book returned successfully!");
+        } else {
+          $("#bookShelfUpdateLabel").text("Return unsuccessful: " + data.reason);
+        }
+      });
+  };
+};
+
 var deleteHandlerMaker = function(type, identifier) {
 	switch(type) {
 		case "book":
@@ -211,6 +228,8 @@ var printBookData = function(data) {
 					content += "<button id='returnBook" + data[book]["isbn"]
 					    		+ "' class='optionButtons'>Return"
 					  	    + "</button>";
+          $("#bookShelf").on("click", "#returnBook" + data[book]["isbn"],
+            returnHandlerMaker(data[book]["isbn"]));
 				}
 			}
 	    content += "</div>";
