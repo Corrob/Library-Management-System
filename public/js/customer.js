@@ -5,7 +5,6 @@ var selectedFilter = "";
 var searchBarQuery = "";
 var bookShelfUpdateLabel = "<div class='updateContainer'>"
 												 + "<label id='bookShelfUpdateLabel'></label></div>";
-var currentBookCheckedout = false;
 
 var jcrop_api;
 var canSubmitNewBook = true;
@@ -71,6 +70,21 @@ var deleteHandlerMaker = function(type, identifier) {
 			break;
 	}
 };
+
+var checkBookCheckedoutStatus = function(bookIsbn) {
+	var result = false;
+	$.ajax({
+          url:  "/check_book",
+          type: "POST",
+          data: {username: currentUsername,
+          			 isbn: bookIsbn},
+          async: false,
+          success: function(data){
+            result = data.checkedoutState;
+          }
+       });
+	return result;
+}
 
 var performSearch = function(filter, query) {
 	switch (filter) {
@@ -187,11 +201,17 @@ var printBookData = function(data) {
 	      $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
       		deleteHandlerMaker("book", data[book]["isbn"]));
 	    } else {
-				content += "<button id='checkoutBook" + data[book]["isbn"]
-				    		+ "' class='optionButtons'>Check Out"
-				  	    + "</button>";
-				$("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
-					checkoutHandlerMaker(data[book]["isbn"]));
+	    	if (!checkBookCheckedoutStatus(data[book]["isbn"])) {
+					content += "<button id='checkoutBook" + data[book]["isbn"]
+					    		+ "' class='optionButtons'>Check Out"
+					  	    + "</button>";
+					$("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
+						checkoutHandlerMaker(data[book]["isbn"]));
+				} else {
+					content += "<button id='returnBook" + data[book]["isbn"]
+					    		+ "' class='optionButtons'>Return"
+					  	    + "</button>";
+				}
 			}
 	    content += "</div>";
 		}
