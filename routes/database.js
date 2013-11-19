@@ -98,6 +98,8 @@ module.exports = {
         return console.error('error fetching client from pool', err);
       }
 
+      console.log(getNewDataQuery(data, table));
+
       client.query(getNewDataQuery(data, table), function(err, results) {
         done();
         if (err) {
@@ -258,6 +260,31 @@ module.exports = {
         callback(true);
       });
     });
+  },
+
+  getCoverByIsbn: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false, "");
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getCoverByISBNQuery(data),
+        function(err, results) {
+          done();
+          if (err) {
+            callback(false, "");
+            return console.error('error reading book table', err);
+          }
+
+          if (results.rows.length > 0) {
+            callback(true, results.rows[0].cover);
+          } else {
+            callback(false, "");
+            return console.error('error reading book table', err);
+          }
+        });
+    }); 
   }
 };
 
@@ -351,21 +378,21 @@ getBooksByKeywordQuery = function(table, admin, keywords, column) {
 
   query += ";";
   return query;
-}
+};
 
 getAllUsersQuery = function(table) {
   var query = "SELECT account_no, username, last_name, first_name, admin FROM"
             + " " + table + ";";
   
   return query;
-}
+};
 
 getUsersByKeyQuery = function(table, key, column) {
   var query = "SELECT account_no, username, last_name, first_name, admin FROM"
             + " " + table
             + " WHERE " + column + " = " + "'" + key + "';";
   return query;
-}
+};
 
 getCheckedoutBookQuery = function(table, username, isbn) {
   var query = "SELECT * FROM " + table
@@ -373,14 +400,14 @@ getCheckedoutBookQuery = function(table, username, isbn) {
             + "(books_checked_out)";
   query += ";";
   return query;
-}
+};
 
 getCheckoutQuery = function(table, isbn) {
   var query = "UPDATE " + table + " SET avail_copies = avail_copies - 1 WHERE "
             + "isbn = '" + isbn + "' AND avail_copies > 0";
   query += ";";
   return query;
-}
+};
 
 getAddToCheckedoutBooksQuery = function(table, username, isbn) {
   var query = "UPDATE " + table + " SET books_checked_out = array_append("
@@ -388,4 +415,9 @@ getAddToCheckedoutBooksQuery = function(table, username, isbn) {
             + "'";
   query += ";";
   return query;
-}
+};
+
+getCoverByISBNQuery = function(data) {
+  return "SELECT cover FROM book WHERE isbn='" + data.isbn + "';";
+};
+

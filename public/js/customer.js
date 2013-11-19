@@ -296,6 +296,9 @@ function checkNewBookForm() {
   if (!isPositiveInt($("#copies").val())) {
     $(".updateLabel").text('Copies field must be an integer.');
     return false;
+  } else if ($("#isbn").val() == '') {
+    $(".updateLabel").text('A book must have an ISBN.');
+    return false;
   } else if (!canSubmitNewBook) {
     $(".updateLabel").text('Cannot submit invalid image. Please upload a valid image (jpg/png and <1 MB).');
     return false;

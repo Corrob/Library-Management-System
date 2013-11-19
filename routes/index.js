@@ -1,6 +1,20 @@
 var database = require('./database.js');
 var gm = require('gm')
   , imageMagick = gm.subClass({ imageMagick: true });
+var s3 = require('s3');
+var knox = require('knox');
+
+var client = s3.createClient({
+  key: "AKIAJTCTMUXCMQT75QOA",
+  secret: "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",
+  bucket: "library_management_system_bucket"
+});
+
+var knoxClient = knox.createClient({
+  key: "AKIAJTCTMUXCMQT75QOA",
+  secret: "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",
+  bucket: "library_management_system_bucket"
+});
 
 var makeJSONObject = function(results, type) {
   var jsonObject = new Object();
@@ -72,6 +86,14 @@ exports.new_customer = function(req, res) {
 };
 
 exports.new_book = function(req, res) {
+  // Double check image size
+  if (req.files.cover != null &&
+    req.files.cover.size > 1000 * 1024) {
+    console.log("File too large.");
+    res.json({completed: false});
+    return;
+  }
+
   // Update copies to match database
   if (req.body.copies != null) {
     req.body["avail_copies"] = req.body.copies;
@@ -79,34 +101,71 @@ exports.new_book = function(req, res) {
     delete req.body.copies;
   }
 
+  // Resize image and upload
   if (req.files.cover != null) {
     if (req.body.x1 != '' && req.body.x2 != '' && 
       req.body.y1 != '' && req.body.y2 != '') {
       imageMagick(req.files.cover.path)
         .crop(req.body.x2 - req.body.x1, req.body.y2 - req.body.y1, 
           req.body.x1, req.body.y1)
+        .resize(150, 150)
         .write(req.files.cover.path, function(err) {
           if (err) {
-            res.json({completed: false})
-          };
+            console.log(err);
+            res.json({completed: false});
+          } else {
+            uploadToS3(req, res);
+          }            
+        });
+    } else {
+      imageMagick(req.files.cover.path)
+        .resize(150, 150)
+        .write(req.files.cover.path, function(err) {
+          if (err) {
+            console.log(err);
+            res.json({completed: false});
+          } else {
+            uploadToS3(req, res);
+          }
         });
     }
-
-    // TODO: add upload to S3
-    req.body.cover = "/images/no_cover.png";
+    console.log();
   } else {
     req.body.cover = "/images/no_cover.png";
+    addBookToDB(req, res);
   }
+};
 
+function uploadToS3(req, res) {
+  var headers = {
+    'Content-Type' : req.files.cover.type,
+    'x-amz-acl'    : 'public-read'
+  };
+
+  var uploader = client.upload(req.files.cover.path, 
+    req.body.isbn + Math.floor(Math.random()*10000000), headers);
+  uploader.on('error', function(err) {
+    console.error("unable to upload:", err.stack);
+    res.json({completed: false});
+  }); 
+  uploader.on('end', function(url) {
+    req.body.cover = url;
+    addBookToDB(req, res);
+  });
+}
+
+function addBookToDB(req, res) {
   delete req.body.x1;
   delete req.body.x2;
   delete req.body.y1;
   delete req.body.y2;
 
+  console.log("Adding to database now.");
+
   database.addNewData(req.body, "book", function(success) {
     res.json({completed: success});
   });
-};
+}
 
 exports.get_books = function(req, res) {
   if (typeof req.body.keywords == "undefined" 
@@ -163,6 +222,35 @@ exports.delete_customer = function(req, res) {
 };
 
 exports.delete_book = function(req, res) {
+  database.getCoverByIsbn(req.body, function(success, cover) {
+    if (!success) {
+      res.json({deleted: false});
+    } else {
+      if (cover == "/images/no_cover.png") {
+        finishDeleteBook(req, res);
+      } else {
+        cover = removeAmazonUrl(cover); 
+        knoxClient.deleteFile(cover, function(err, resTwo){
+          if (err) {
+            res.json({deleted: false});
+          }
+          finishDeleteBook(req, res);
+        });
+      }
+    }
+  });
+};
+
+function removeAmazonUrl(url) {
+  k = url.indexOf("/");
+  while (k != -1) {
+    url = url.substring(k + 1, url.length);
+    k = url.indexOf("/");
+  }
+  return url;
+};
+
+function finishDeleteBook(req, res) {
   database.deleteData(req.body, "book", function(success) {
     res.json({deleted: success});
   });
@@ -179,3 +267,4 @@ exports.check_book = function(req, res) {
     res.json({checkedoutState: bookState});
   });
 };
+
