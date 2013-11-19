@@ -39,6 +39,8 @@
   border: 1px solid;
   width: 400px;
   height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .hiddenForm {
@@ -286,6 +288,17 @@ input[type=radio]:checked + label.radioLabel:before {
   color: #FF0000;
 }
 
+#bookShelfUpdateContainer {
+   margin: 5px;
+   text-align: center;
+}
+
+#bookShelfUpdateLabel {
+  font-size: 16px;
+  font-style: italic;
+  text-shadow: 0px 0px 5px #FFFFFF;
+}
+
 #description {
   resize: none;
 }
@@ -341,6 +354,54 @@ div.checkboxInputLine {
   margin-bottom: 20px;
   width: 90%;
   text-align: center;
+}
+
+div.shelfEntry {
+  padding: 10px;
+  margin-bottom: 25px;
+  background: rgba(123, 193, 247, 0.2);
+  box-shadow: 0px 0px 10px 2px #FFFFFF;
+  border: 1px solid #FFFFFF;
+  border-radius: 5px;
+}
+
+a.bookTitle {
+  display: block;
+  font-weight: bold;
+  color: #000000;
+  font-size: 16px;
+}
+
+a.bookTitle:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+p.bookDescription {
+  display: block;
+  padding-left: 10px;
+  font-size: 14px;
+  font-style: italic;
+  color: #000000;
+  text-shadow: 0px 0px 5px #FFFFFF;
+}
+
+a.accountNumber {
+  display: block;
+  font-weight: bold;
+  color: #000000;
+  font-size: 16px;
+}
+
+a.accountNumber:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+span.userInfo {
+  display: block;
+  font-size: 14px;
+  text-shadow: 0px 0px 5px #FFFFFF;
 }
 
 .imagePreview {

@@ -2,6 +2,18 @@ var database = require('./database.js');
 var gm = require('gm')
   , imageMagick = gm.subClass({ imageMagick: true });
 
+var makeJSONObject = function(results, type) {
+  var jsonObject = new Object();
+  for (var i = 0; i < results.length; i++) {
+    var row = new Object();
+    for (var column in results[i]) {
+      row[column] = results[i][column];
+    }
+    jsonObject[type + i] = row;
+  }
+  return jsonObject;
+};
+
 exports.login_page = function(req, res) {
   if (req.cookies.username == undefined) {
     res.render('login_page', { title : "Library Management System Log In"});
@@ -94,14 +106,62 @@ exports.new_book = function(req, res) {
   });
 };
 
+exports.get_books = function(req, res) {
+  if (typeof req.body.keywords == "undefined" 
+    && typeof req.body.column == "undefined") {
+    database.getAllBooks(req.body.admin, function(data) {
+      if (data.length > 0) {
+        var jsonBooksObject = makeJSONObject(data, "book");
+        res.json(jsonBooksObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  } else {
+    database.getBooksByKeyword(req.body,
+      function(data) {
+      if (data.length > 0) {
+        var jsonBooksObject = makeJSONObject(data, "book");
+        res.json(jsonBooksObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  }
+};
+
+exports.get_users = function(req, res) {
+  if (typeof req.body.key == "undefined"
+    && typeof req.body.column == "undefined") {
+    database.getAllUsers(function(data) {
+      if (data.length > 0) {
+        var jsonUsersObject = makeJSONObject(data, "user");
+        res.json(jsonUsersObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  } else {
+    database.getUsersByKey(req.body,
+      function(data) {
+      if (data.length > 0) {
+        var jsonUsersObject = makeJSONObject(data, "user");
+        res.json(jsonUsersObject);
+      } else {
+        res.json(new Object());
+      }
+    });
+  }
+};
+
 exports.delete_customer = function(req, res) {
   database.deleteData(req.body, "customer", function(success) {
     res.json({deleted: success});
   });
-}
+};
 
 exports.delete_book = function(req, res) {
   database.deleteData(req.body, "book", function(success) {
     res.json({deleted: success});
   });
-}
+};

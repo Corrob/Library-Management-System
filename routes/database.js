@@ -131,6 +131,84 @@ module.exports = {
         }
       });
     });
+  },
+
+  getAllBooks: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getAllBooksQuery("book", data), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading book table', err);
+        }
+
+        callback(results.rows);
+      });
+    });
+  },
+
+  getBooksByKeyword: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getBooksByKeywordQuery("book", data.admin, data.keywords,
+        data.column), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading book table', err);
+        }
+
+        callback(results.rows);
+      });
+    });
+  },
+
+  getAllUsers: function(callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getAllUsersQuery("customer"), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading customer table', err);
+        }
+
+        callback(results.rows);
+      });
+    });
+  },
+
+  getUsersByKey: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getUsersByKeyQuery("customer", data.key, data.column),
+        function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading customer table', err);
+        }
+
+        callback(results.rows);
+        });
+    }); 
   }
 };
 
@@ -202,3 +280,40 @@ getNewDataQuery = function(data, table) {
 getMaxAccountNoQuery = function() {
   return "SELECT MAX(account_no) FROM customer";
 };
+
+getAllBooksQuery = function(table, admin) {
+  var query = "SELECT isbn, title, description FROM " + table;
+  
+  if (admin === "false") {
+    query += " WHERE avail_copies > 0";
+  }
+  query += ";";
+  return query;
+};
+
+getBooksByKeywordQuery = function(table, admin, keywords, column) {
+  var query = "SELECT isbn, title, description FROM " + table
+            + " WHERE position('" + keywords + "' in upper(" + column
+            + ")) > 0";
+
+  if (admin === "false") {
+    query += " AND avail_copies > 0";
+  }
+
+  query += ";";
+  return query;
+}
+
+getAllUsersQuery = function(table) {
+  var query = "SELECT account_no, username, last_name, first_name, admin FROM"
+            + " " + table + ";";
+  
+  return query;
+}
+
+getUsersByKeyQuery = function(table, key, column) {
+  var query = "SELECT account_no, username, last_name, first_name, admin FROM"
+            + " " + table
+            + " WHERE " + column + " = " + "'" + key + "';";
+  return query;
+}

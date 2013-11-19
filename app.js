@@ -36,6 +36,8 @@ app.post('/login', routes.process_login);
 app.post('/logout', routes.logout);
 app.post('/new_customer', routes.new_customer);
 app.post('/new_book', routes.new_book);
+app.post('/get_books', routes.get_books);
+app.post('/get_users', routes.get_users);
 app.post('/delete_customer', routes.delete_customer);
 app.post('/delete_book', routes.delete_book);
 
