@@ -1,4 +1,6 @@
 var database = require('./database.js');
+var gm = require('gm')
+  , imageMagick = gm.subClass({ imageMagick: true });
 
 exports.login_page = function(req, res) {
   if (req.cookies.username == undefined) {
@@ -64,8 +66,28 @@ exports.new_book = function(req, res) {
     req.body["total_copies"] = req.body.copies;
     delete req.body.copies;
   }
-  console.log(req.files);
-  console.log(req.body);
+
+  if (req.files.cover != null) {
+    if (req.body.x1 != '' && req.body.x2 != '' && 
+      req.body.y1 != '' && req.body.y2 != '') {
+      imageMagick(req.files.cover.path)
+        .crop(req.body.x2 - req.body.x1, req.body.y2 - req.body.y1, 
+          req.body.x1, req.body.y1)
+        .write(req.files.cover.path, function(err) {
+          if (err) res.json({completed: false});
+        });
+    }
+
+    // TODO: add upload to S3
+    req.body.cover = "/images/no_cover.png";
+  } else {
+    req.body.cover = "/images/no_cover.png";
+  }
+
+  delete req.body.x1;
+  delete req.body.x2;
+  delete req.body.y1;
+  delete req.body.y2;
 
   database.addNewData(req.body, "book", function(success) {
     res.json({completed: success});
