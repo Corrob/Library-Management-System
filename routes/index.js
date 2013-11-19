@@ -88,8 +88,10 @@ exports.new_customer = function(req, res) {
 exports.new_book = function(req, res) {
   // Double check image size
   if (req.files.cover != null &&
-    req.files.cover.size < 1000 * 1024) {
+    req.files.cover.size > 1000 * 1024) {
+    console.log("File too large.");
     res.json({completed: false});
+    return;
   }
 
   // Update copies to match database
