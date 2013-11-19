@@ -1,6 +1,13 @@
 var database = require('./database.js');
 var gm = require('gm')
   , imageMagick = gm.subClass({ imageMagick: true });
+var s3 = require('s3');
+
+var client = s3.createClient({
+  key: "AKIAJTCTMUXCMQT75QOA",
+  secret: "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",
+  bucket: "library_management_system_bucket"
+});
 
 var makeJSONObject = function(results, type) {
   var jsonObject = new Object();
@@ -85,17 +92,44 @@ exports.new_book = function(req, res) {
       imageMagick(req.files.cover.path)
         .crop(req.body.x2 - req.body.x1, req.body.y2 - req.body.y1, 
           req.body.x1, req.body.y1)
+        .resize(150, 150)
         .write(req.files.cover.path, function(err) {
-          if (err) res.json({completed: false});
+          if (err) {
+            console.log(err);
+            res.json({completed: false});
+          } else {
+            uploadToS3(req, res);
+          }            
         });
+    } else {
+      uploadToS3(req, res);
     }
-
-    // TODO: add upload to S3
-    req.body.cover = "/images/no_cover.png";
+    console.log();
   } else {
     req.body.cover = "/images/no_cover.png";
+    addBookToDB(req, res);
   }
+};
 
+function uploadToS3(req, res) {
+  var headers = {
+    'Content-Type' : req.files.cover.type,
+    'x-amz-acl'    : 'public-read'
+  };
+
+  var uploader = client.upload(req.files.cover.path, 
+    req.body.isbn + Math.floor(Math.random()*10000000), headers);
+  uploader.on('error', function(err) {
+    console.error("unable to upload:", err.stack);
+    res.json({completed: false});
+  }); 
+  uploader.on('end', function(url) {
+    req.body.cover = url;
+    addBookToDB(req, res);
+  });
+}
+
+function addBookToDB(req, res) {
   delete req.body.x1;
   delete req.body.x2;
   delete req.body.y1;
@@ -104,7 +138,7 @@ exports.new_book = function(req, res) {
   database.addNewData(req.body, "book", function(success) {
     res.json({completed: success});
   });
-};
+}
 
 exports.get_books = function(req, res) {
   if (typeof req.body.keywords == "undefined" 
