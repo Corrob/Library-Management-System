@@ -16,6 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
+app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.cookieParser());
@@ -37,6 +38,8 @@ app.post('/new_customer', routes.new_customer);
 app.post('/new_book', routes.new_book);
 app.post('/get_books', routes.get_books);
 app.post('/get_users', routes.get_users);
+app.post('/delete_customer', routes.delete_customer);
+app.post('/delete_book', routes.delete_book);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Server listening on port ' + app.get('port'));

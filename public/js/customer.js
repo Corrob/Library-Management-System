@@ -4,6 +4,8 @@ var searchShowing = false;
 var selectedFilter = "";
 var bookShelfUpdateLabel = "<div id='bookShelfUpdateContainer'>"
 												 + "<label id='bookShelfUpdateLabel'></label></div>";
+var jcrop_api;
+var canSubmitNewBook = true;
 
 var loadBooks = function() {
   $.post('/get_books',
@@ -143,25 +145,33 @@ $("#submit_new_customer").click(function() {
     });
 });
 
-$("#submit_new_book").click(function() {
+function checkNewBookForm() {
   if (!isPositiveInt($("#copies").val())) {
     $(".updateLabel").text('Copies field must be an integer.');
+    return false;
+  } else if (!canSubmitNewBook) {
+    $(".updateLabel").text('Cannot submit invalid image. Please upload a valid image (jpg/png and <1 MB).');
+    return false;
   } else {
-    $.post('/new_book', {isbn : $("#isbn").val(), 
-                         title : $("#title").val(),
-                         author: $("#author").val(),
-                         description: $("#description").val(),
-                         genre: $("#genre").val(),
-                         total_copies: $("#copies").val(),
-                         avail_copies: $("#copies").val()},
-      function(data, textStatus) {
+    return true;
+  }
+}
+
+// Make new book with form ajax
+$(document).ready(function() { 
+  $('#new_book_form').ajaxForm({
+    success: function(data, textStatus) {
         if (data.completed) {
           clearHiddenForms();
         } else {
           $(".updateLabel").text('Failed to submit new book.');
         }
-      });
-  }
+      }
+    });
+}); 
+
+$(".cancel").click(function() {
+  clearHiddenForms();
 });
 
 var isPositiveInt = function(str) {
@@ -169,9 +179,90 @@ var isPositiveInt = function(str) {
   return /^[1-9][0-9]*$/.test(str);
 }
 
-$(".cancel").click(function() {
-  clearHiddenForms();
-});
+var clearHiddenForms = function() {
+  $(".hiddenForm input[type=text]").each(function() {
+    $(this).val("");  
+  });
+  $(".hiddenForm input[type=checkbox]").each(function() {
+    $(this).prop("checked", false);
+  });
+  $(".hiddenForm textarea").each(function() {
+    $(this).val("");  
+  });
+  $(".hiddenForm .updateLabel").each(function() {
+    $(this).text("");
+  });
+  $(".hiddenForm input[type=file]").each(function() {
+    $(this).val("");
+  });
+  $(".hiddenForm").hide();
+  $(".imagePreview").hide();
+};
+
+// update info by cropping (onChange and onSelect events handler)
+function updateInfo(e) {
+    $('#x1').val(e.x);
+    $('#y1').val(e.y);
+    $('#x2').val(e.x2);
+    $('#y2').val(e.y2);
+};
+
+// Code from http://www.script-tutorials.com/html5-image-uploader-with-jcrop/
+function fileSelectHandler() {
+  var oFile = $('#cover')[0].files[0];
+
+  $('.updateLabel').text('');
+  $('.imagePreview').hide();
+  canSubmitNewBook = false;
+
+  // check for image type (jpg and png are allowed)
+  var rFilter = /^(image\/jpeg|image\/png)$/i;
+  if (! rFilter.test(oFile.type)) {
+    $('.updateLabel').text('Please select a valid image file (jpg and png are allowed)');
+    return;
+  }
+
+  // check for file size, make sure less than 1 MB
+  if (oFile.size > 1000 * 1024) {
+    $('.updateLabel').text('File must be less than 1 MB');
+    return;
+  }
+
+  canSubmitNewBook = true;
+
+  // preview element
+  var oImage = document.getElementById('preview');
+
+  // prepare HTML5 FileReader
+  var oReader = new FileReader();
+    oReader.onload = function(e) {
+
+    // e.target.result contains the DataURL which we can use as a source of the image
+    oImage.src = e.target.result;
+    oImage.onload = function () { // onload event handler
+      if (jcrop_api != null) {
+        $(oImage).attr('style','');
+        jcrop_api.destroy();
+      }
+
+      $('.imagePreview').show();
+      $('#preview').Jcrop({
+        onChange: updateInfo,
+        onSelect: updateInfo,
+      }, function(){
+        jcrop_api = this;
+        $('.imagePreview').css('right', getRight($('#bookShelf')));
+      });
+    };
+  };
+
+  // read selected file as DataURL
+  oReader.readAsDataURL(oFile);
+}
+
+function getRight(el) {
+  return ($(window).width() - (el.offset().left + el.outerWidth()));
+}
 
 $("#filter").click(function() {
   if (!searchShowing) {
@@ -219,22 +310,6 @@ $("#filter").click(function() {
     searchShowing = false;
   }
 });
-
-var clearHiddenForms = function() {
-  $(".hiddenForm input[type=text]").each(function() {
-    $(this).val("");  
-  });
-  $(".hiddenForm input[type=checkbox]").each(function() {
-    $(this).prop("checked", false);
-  });
-  $(".hiddenForm textarea").each(function() {
-    $(this).val("");  
-  });
-  $(".hiddenForm .updateLabel").each(function() {
-    $(this).text("");
-  });
-  $(".hiddenForm").hide();
-};
 
 $("#bookShelf").on("focus", "#searchBar", function() {
   $(this).css('color', '#666666');
@@ -323,3 +398,4 @@ $("#list_users").click(function() {
 });
 
 $(document).ready(loadBooks);
+

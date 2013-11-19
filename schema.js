@@ -11,7 +11,7 @@ var tableQuery = "CREATE TABLE customer \
          street text,          /* customer street address */ \
          city text,            /* customer city */ \
          state text,           /* customer state */ \
-         zip int,              /* customer zip */ \
+         zip text,              /* customer zip */ \
          email text,           /* customer email address */ \
          admin boolean)";      /*  does customer have admin rights */
 var adminQuery = "INSERT INTO customer ( account_no, username, password, admin) \

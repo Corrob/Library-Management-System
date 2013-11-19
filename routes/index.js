@@ -70,6 +70,15 @@ exports.new_customer = function(req, res) {
 };
 
 exports.new_book = function(req, res) {
+  // Update copies to match database
+  if (req.body.copies != null) {
+    req.body["avail_copies"] = req.body.copies;
+    req.body["total_copies"] = req.body.copies;
+    delete req.body.copies;
+  }
+  console.log(req.files);
+  console.log(req.body);
+
   database.addNewData(req.body, "book", function(success) {
     res.json({completed: success});
   });
@@ -121,4 +130,16 @@ exports.get_users = function(req, res) {
       }
     });
   }
-}
+};
+
+exports.delete_customer = function(req, res) {
+  database.deleteData(req.body, "customer", function(success) {
+    res.json({deleted: success});
+  });
+};
+
+exports.delete_book = function(req, res) {
+  database.deleteData(req.body, "book", function(success) {
+    res.json({deleted: success});
+  });
+};

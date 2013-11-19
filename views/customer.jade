@@ -2,6 +2,7 @@ extends layout
 
 block head
   link(rel='stylesheet', href='/stylesheets/customer_page.css')
+  link(rel='stylesheet', href='/stylesheets/jquery.Jcrop.min.css')
 
 block content
   script.
@@ -21,6 +22,8 @@ block content
         button(id="filter") Filter
         #bookShelf
       if admin
+        .imagePreview(style="display:none")
+          img(id="preview")
         .hiddenForm#new_customer_form(style="display: none;")
           label(class="updateLabel")
           .inputLines
@@ -57,26 +60,35 @@ block content
           button(class="optionButtons hiddenFormButtons cancel") Cancel
         .hiddenForm#new_book_form(style="display: none;")
           label(class="updateLabel")
-          .inputLines
-            label(for="isbn" class="inputLineLabels") ISBN:
-            input(type="text", id="isbn", style="display: inline-block;", class="formTextbox")
-          .inputLines
-            label(for="title" class="inputLineLabels") Title:
-            input(type="text", id="title", style="display: inline-block;", class="formTextbox")
-          .inputLines
-            label(for="author" class="inputLineLabels") Author:
-            input(type="text", id="author", style="display: inline-block;", class="formTextbox")
-          .inputLines
-            label(for="description" id="descriptionBoxLabel") Description:
-            textarea(id="description", style="display: inline-block;", class="formTextbox descriptionBox", rows=5, columns=30)
-          .inputLines
-            label(for="genre" class="inputLineLabels") Genre:
-            input(type="text", id="genre", style="display: inline-block;", class="formTextbox")
-          .inputLines
-            label(for="copies" class="inputLineLabels") Copies:
-            input(type="text", id="copies", style="display: inline-block;", class="formTextbox")
-          button(id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
-          button(class="optionButtons hiddenFormButtons cancel") Cancel
+          form(id="new_book_form" enctype="multipart/form-data" method="post" action="/new_book"
+            onsubmit="return checkNewBookForm()")
+            input(type="hidden" name="x1" id="x1")
+            input(type="hidden" name="y1" id="y1")
+            input(type="hidden" name="x2" id="x2")
+            input(type="hidden" name="y2" id="y2")
+            .inputLines
+              label(for="isbn" class="inputLineLabels") ISBN:
+              input(type="text", name="isbn", style="display: inline-block;", class="formTextbox")
+            .inputLines
+              label(for="title" class="inputLineLabels") Title:
+              input(type="text", name="title", style="display: inline-block;", class="formTextbox")
+            .inputLines
+              label(for="author" class="inputLineLabels") Author:
+              input(type="text", name="author", style="display: inline-block;", class="formTextbox")
+            .inputLines
+              label(for="description" id="descriptionBoxLabel") Description:
+              textarea(id="description", name="description", style="display: inline-block;", class="formTextbox descriptionBox", rows=5, columns=30)
+            .inputLines
+              label(for="genre" class="inputLineLabels") Genre:
+              input(type="text", name="genre", style="display: inline-block;", class="formTextbox")
+            .inputLines
+              label(for="copies" class="inputLineLabels") Copies:
+              input(type="text", id="copies", name="copies", style="display: inline-block;", class="formTextbox")
+            .inputLines
+              label(for="cover" class="inputLineLabels") Cover Image:
+              input(type="file", name="cover", id="cover", onchange="fileSelectHandler()");
+            button(type="submit" id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
+            button(class="optionButtons hiddenFormButtons cancel") Cancel
       #options
         #optionsLabel
           | Options
@@ -86,4 +98,6 @@ block content
           button(id="new_book" class="optionButtons") Add New Book
           button(id="new_customer" class="optionButtons") Add New Customer
 
-  script(src='/js/customer.js');
+  script(src="http://malsup.github.com/jquery.form.js")
+  script(src="/js/jquery.Jcrop.min.js")
+  script(src='/js/customer.js')
