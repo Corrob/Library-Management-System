@@ -86,7 +86,9 @@ exports.new_book = function(req, res) {
         .crop(req.body.x2 - req.body.x1, req.body.y2 - req.body.y1, 
           req.body.x1, req.body.y1)
         .write(req.files.cover.path, function(err) {
-          if (err) res.json({completed: false});
+          if (err) {
+            res.json({completed: false})
+          };
         });
     }
 

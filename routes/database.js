@@ -242,7 +242,7 @@ getCheckDataQuery = function(data, table) {
 };
 
 getDeleteDataQuery = function(data, table) {
-  var query = "DELETE ";
+  var query = "DELETE";
 
   query += " FROM " + table + " WHERE ";
 

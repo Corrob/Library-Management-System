@@ -285,10 +285,12 @@ input[type=radio]:checked + label.radioLabel:before {
 }
 
 .updateLabel {
+  font-size: 16px;
+  font-style: italic;
   color: #FF0000;
 }
 
-#bookShelfUpdateContainer {
+.updateContainer {
    margin: 5px;
    text-align: center;
 }
@@ -418,8 +420,7 @@ span.bookInfo {
 
 .bookCover {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 5px auto 5px auto;
   width: 150px;
   height: 150px;
 }
