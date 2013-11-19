@@ -2,10 +2,106 @@ var searchBarDefault = "Enter query...";
 var bookShelfContent;
 var searchShowing = false;
 var selectedFilter = "";
-var bookShelfUpdateLabel = "<div id='bookShelfUpdateContainer'>"
+var searchBarQuery = "";
+var bookShelfUpdateLabel = "<div class='updateContainer'>"
 												 + "<label id='bookShelfUpdateLabel'></label></div>";
 var jcrop_api;
 var canSubmitNewBook = true;
+
+var checkoutRequestMaker = function(username, isbn) {
+	return function() {
+		/*$.post('/checkout_book',
+
+			);*/
+	};
+};
+
+var deleteRequestMaker = function(type, identifier) {
+	switch(type) {
+		case "book":
+			return function () {
+				$.post('/delete_book',
+					{isbn: identifier},
+					function(data, textStatus) {
+						if (data) {
+							// Perform same search as user so the list of books only shows
+							// what the user wanted.
+							if (selectedFilter && searchBarQuery) {
+								performSearch(selectedFilter, searchBarQuery);
+							} else {
+								loadBooks();
+							}
+							$("#bookShelfUpdateLabel").text("Book was deleted successfully!");
+						} else {
+							$("#bookShelfUpdateLabel").text("Book deletion was unsuccessful!");
+						}
+					});
+			};
+			break;
+		case "customer":
+			return function () {
+				$.post('/delete_customer',
+				{account_no: identifier},
+				function(data, textStatus) {
+					if (data) {
+						loadCustomers();
+						$("#bookShelfUpdateLabel").text("User was deleted successfully!");
+					} else {
+						$("#bookShelfUpdateLabel").text("User deletion was unsuccessful!");
+					}
+				});
+			};
+			break;
+	}
+};
+
+var performSearch = function(filter, query) {
+	switch (filter) {
+    case "byTitle":
+      $.post('/get_books',
+        {admin: adminBoolean,
+         keywords: query.toUpperCase(),
+         column: "title" 
+        },
+        function (data, textStatus) {
+          printBookData(data);
+        });
+      break;
+    case "byAuthor":
+      $.post('/get_books',
+        {admin: adminBoolean,
+         keywords: query.toUpperCase(),
+         column: "author" 
+        },
+        function (data, textStatus) {
+          printBookData(data);
+        });
+      break;
+
+    case "byId":
+    	$.post('/get_users',
+    		{key: query,
+    		 column: "account_no"
+    		},
+    		function (data, textStatus) {
+    			printUserData(data);
+    		});
+      break;
+
+    case "byName":
+    	$.post('/get_users',
+    		{key: query,
+    		 column: "username"
+    		},
+    		function (data, textStatus) {
+    			printUserData(data);
+    		});
+      break;
+    default:
+    	$("#bookShelfUpdateLabel").text("Please select a filter!");
+      break;
+  }
+};
 
 var loadBooks = function() {
   $.post('/get_books',
@@ -48,14 +144,19 @@ var printBookData = function(data) {
 	      }
 	    }
 	    if (adminBoolean) {
-	      content += "<button class='optionButtons'>Delete"
-	              + "</button>";
+	      content += "<button id='deleteBook" + data[book]["isbn"]
+				        + "' class='optionButtons'>Delete"
+	      				+ "</button>";
+	      $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
+      		deleteRequestMaker("book", data[book]["isbn"]));
 	    } else {
 	      content += "<button id='checkout" + data[book]["isbn"] 
 	              + "' class='optionButtons'>Check Out"
 	              + "</button>";
+	      $("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
+	      	checkoutRequestMaker()
+	      	)
 	    }
-
 	    content += "</div>";
 	  }
 	  content += "</div>";
@@ -96,9 +197,12 @@ var printUserData = function(data) {
 	          break;   
 	      }
 	    }
-      content += "<button class='optionButtons'>Delete"
+      content += "<button id='deleteUser" + data[user]["account_no"]
+							+ "' class='optionButtons'>Delete"
               + "</button>";
 
+    	$("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
+    		deleteRequestMaker("customer", data[user]["account_no"]));
 	    content += "</div>";
 	  }
 	  content += "</div>";
@@ -108,6 +212,8 @@ var printUserData = function(data) {
 		$("#bookShelfUpdateLabel").text("No results found!");
 	}
 };
+
+
 
 $("#logout").click(function() {
   $.post('/logout',
@@ -191,6 +297,11 @@ var clearHiddenForms = function() {
   $(".hiddenForm input[type=text]").each(function() {
     $(this).val("");  
   });
+  
+  $(".hiddenForm input[type=password]").each(function() {
+    $(this).val("");  
+  });
+
   $(".hiddenForm input[type=checkbox]").each(function() {
     $(this).prop("checked", false);
   });
@@ -274,6 +385,7 @@ function getRight(el) {
 
 $("#filter").click(function() {
   if (!searchShowing) {
+  	selectedFilter = "";
     bookShelfContent = $("#bookShelf").html();
     var filterHtml = bookShelfUpdateLabel;
     filterHtml += "<input type='text' id='searchBar'"
@@ -337,55 +449,13 @@ $("#bookShelf").on("focus", "#searchBar", function() {
 
 $("#bookShelf").on("click", "#cancelSearch", function() {
   $("#bookShelf").html(bookShelfContent);
+  searchBarQuery = "";
   searchShowing = false;
 });
 
 $("#bookShelf").on("click", "#search", function() {
-  switch (selectedFilter) {
-    case "byTitle":
-      $.post('/get_books',
-        {admin: adminBoolean,
-         keywords: $("#searchBar").val().toUpperCase(),
-         column: "title" 
-        },
-        function (data, textStatus) {
-          printBookData(data);
-        });
-      break;
-    case "byAuthor":
-      $.post('/get_books',
-        {admin: adminBoolean,
-         keywords: $("#searchBar").val().toUpperCase(),
-         column: "author" 
-        },
-        function (data, textStatus) {
-          printBookData(data);
-        });
-      break;
-
-    case "byId":
-    	$.post('/get_users',
-    		{key: $("#searchBar").val(),
-    		 column: "account_no"
-    		},
-    		function (data, textStatus) {
-    			printUserData(data);
-    		});
-      break;
-
-    case "byName":
-    	$.post('/get_users',
-    		{key: $("#searchBar").val(),
-    		 column: "username"
-    		},
-    		function (data, textStatus) {
-    			printUserData(data);
-    		});
-      break;
-    default:
-    	$("#bookShelfUpdateLabel").text("Please select a filter!");
-      break;
-  }
+  searchBarQuery = $("#searchBar").val();
+  performSearch(selectedFilter, searchBarQuery);
 });
 
 /* Set selectedFilter to the selected filter by user. */
