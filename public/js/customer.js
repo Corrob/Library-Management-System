@@ -9,6 +9,22 @@ var bookShelfUpdateLabel = "<div class='updateContainer'>"
 var jcrop_api;
 var canSubmitNewBook = true;
 
+var refreshView = function(type) {
+  setTimeout(function() {
+    // Perform same search as user so the list of books only shows
+    // what the user wanted.
+    if (selectedFilter && searchBarQuery) {
+      performSearch(selectedFilter, searchBarQuery);
+    } else {
+      if (type == "book") {
+        loadBooks();
+      } else {
+        loadCustomers();
+      }
+    }
+  }, 1000);
+}
+
 var showDetailsHandlerMaker = function(type, identifier) {
   switch(type) {
     case "book":
@@ -157,7 +173,8 @@ var checkoutHandlerMaker = function(bookIsbn) {
       function(data, textStatus) {
         $("#bookShelf").scrollTop(0);
         if (data.checkedout) {
-          $("#bookShelfUpdateLabel").text("Book checked out successfully!");
+          $("#bookShelfUpdateLabel").text("Book checked out successfully! Updating list...");
+          refreshView("book");
         } else {
           $("#bookShelfUpdateLabel").text("Check out unsuccessful: " + data.reason);
         }
@@ -174,7 +191,8 @@ var returnHandlerMaker = function(bookIsbn) {
       function(data, textStatus) {
         $("#bookShelf").scrollTop(0);
         if (data.completed) {
-          $("#bookShelfUpdateLabel").text("Book returned successfully!");
+          $("#bookShelfUpdateLabel").text("Book returned successfully! Updating list...");
+          refreshView("book");
         } else {
           $("#bookShelfUpdateLabel").text("Return unsuccessful: " + data.reason);
         }
@@ -193,15 +211,7 @@ var deleteHandlerMaker = function(type, identifier) {
             if (data) {
               $("#bookShelfUpdateLabel")
               .text("Book was deleted successfully! Updating list...");
-              setTimeout(function() {
-                // Perform same search as user so the list of books only shows
-                // what the user wanted.
-                if (selectedFilter && searchBarQuery) {
-                  performSearch(selectedFilter, searchBarQuery);
-                } else {
-                  loadBooks();
-                }
-              }, 1000);
+              refreshView("book");
             } else {
               $("#bookShelfUpdateLabel").text("Book deletion was unsuccessful!");
             }
@@ -473,6 +483,9 @@ $("#submit_new_customer").click(function() {
       if (data.completed) {
         if (!data.exists) {
           clearHiddenForms();
+          $("#bookShelfUpdateLabel")
+          .text("Customer successfully added! Updating list...");
+          refreshView("customer");
         } else {
           $(".updateLabel").text('Username already exists.');
         }
@@ -496,11 +509,6 @@ function checkNewBookForm() {
     return true;
   }
 }
-
-
-$(document).ready(function() { 
- 
-}); 
 
 $(".cancel").click(function() {
   clearHiddenForms();
@@ -717,6 +725,9 @@ $(document).ready(function() {
   success: function(data, textStatus) {
     if (data.completed) {
       clearHiddenForms();
+      $("#bookShelfUpdateLabel")
+      .text("Book successfully added to the library! Updating list...");
+      refreshView("book");
     } else {
       $(".updateLabel").text('Failed to submit new book.');
     }
