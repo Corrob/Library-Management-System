@@ -426,9 +426,9 @@ getMaxAccountNoQuery = function() {
 getAllBooksQuery = function(table, admin) {
   var query = "SELECT cover, isbn, title, author, description FROM " + table;
   
-  if (admin === "false") {
+  /*if (admin === "false") {
     query += " WHERE avail_copies > 0";
-  }
+  }*/
   query += ";";
   return query;
 };
