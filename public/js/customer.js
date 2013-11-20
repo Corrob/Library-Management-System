@@ -4,26 +4,171 @@ var searchShowing = false;
 var selectedFilter = "";
 var searchBarQuery = "";
 var bookShelfUpdateLabel = "<div class='updateContainer'>"
-												 + "<label id='bookShelfUpdateLabel'></label></div>";
+                         + "<label id='bookShelfUpdateLabel'></label></div>";
 
 var jcrop_api;
 var canSubmitNewBook = true;
 
+var showDetailsHandlerMaker = function(type, identifier) {
+  switch(type) {
+    case "book":
+      return function() {
+        $.post('/get_book',
+          {isbn: identifier},
+          function(data, textStatus) {
+            var content = bookShelfUpdateLabel;
+            content += "<div class='shelfEntry'>";
+            if (data) {
+              content += "<img class='bookCover' src='" + data["book0"]["cover"]
+                            + "' />";
+              for (var info in data["book0"]) {
+                switch (info) {
+                  case "author":
+                    content += "<span class='bookInfo'>By: " + data["book0"][info] + "</span>";
+                    break;
+                  case "title":
+                    content += "<span class='bookInfo'>Title: "
+                            + data["book0"][info]
+                            + "</span>";
+                    break;
+                  case "isbn":
+                    content += "<span class='bookInfo'>ISBN: " + data["book0"][info]
+                            + "</span>";
+                    break;
+                  case "genre":
+                    content += "<span class='bookInfo'>Genre: " + data["book0"][info]
+                            + "</span>";
+                    break;
+                  case "sample":
+                    content += "";
+                    break;
+                  case "total_copies":
+                    content += "<span class='bookInfo'>Total Copies in Library: "
+                            + data["book0"][info] + "</span>";
+                    break;
+                  case "avail_copies":
+                    content += "<span class='bookInfo'>Available Copies: "
+                            + data["book0"][info] + "</span>";
+                   break;
+                }
+              } 
+              content += "<span class='bookInfo'>Description: </span>"
+                      + "<p class='bookDescription'>" + data["book0"]["description"]
+                      + "</p>";
+              content += "<div id='detailButtonContainer'>";
+              if (adminBoolean) {
+                content += "<button id='editBook" + data["book0"]["isbn"] + "'"
+                        + " class='optionButtons detailButtons'>Edit</button>";
+
+              }
+              content += "<button id='back'"
+                      + " class='optionButtons detailButtons'>Back</button>";
+              $("#bookShelf").on("click", "#back", function() {
+                $("#bookShelf").html(bookShelfContent);
+              });
+                            
+              content += "</div>";
+              content += "</div>";
+              bookShelfContent = $("#bookShelf").html();
+              $("#bookShelf").html(content);
+            }
+          });
+        };
+      break;
+    case "customer":
+      return function() {
+        $.post('/get_user',
+          {account_no: identifier},
+          function(data, textStatus) {
+            var content = bookShelfUpdateLabel;
+            content += "<div class='shelfEntry'>";
+            if (data) {
+              for (var info in data["user0"]) {
+                switch (info) {
+                  case "account_no":
+                    content += "<span class='userInfo'>User ID: " + data["user0"][info] + "</span>";
+                    break;
+                  case "username":
+                    content += "<span class='userInfo'>Username: "
+                            + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "last_name":
+                    content += "<span class='userInfo'>Last Name: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "first_name":
+                    content += "<span class='userInfo'>First Name: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "street":
+                    content += "<span class='userInfo'>Street Address: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "city":
+                    content += "<span class='userInfo'>City: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "state":
+                    content += "<span class='userInfo'>State: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "zip":
+                    content += "<span class='userInfo'>ZIP code: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "email":
+                    content += "<span class='userInfo'>Email Address: " + data["user0"][info]
+                            + "</span>";
+                    break;
+                  case "admin":
+                    content += "<span class='userInfo'>Admin: ";
+                    if (data["user0"][info]) {
+                      content += "YES";
+                    } else {
+                      content += "NO";
+                    }
+                      content += "</span>";
+                   break;
+                }
+              } 
+              content += "<div id='detailButtonContainer'>";
+
+              content += "<button id='editUser" + data["user0"]["account_no"] + "'"
+                      + " class='optionButtons detailButtons'>Edit</button>";
+
+              content += "<button id='back'"
+                      + " class='optionButtons detailButtons'>Back</button>";
+              $("#bookShelf").on("click", "#back", function() {
+                $("#bookShelf").html(bookShelfContent);
+              });
+                            
+              content += "</div>";
+              content += "</div>";
+              bookShelfContent = $("#bookShelf").html();
+              $("#bookShelf").html(content);
+            }
+          });
+        };
+      break;
+  }
+};
+
 var checkoutHandlerMaker = function(bookIsbn) {
-	return function() {
-		$.post('/checkout_book',
-			{username: currentUsername,
-			 isbn: bookIsbn
-			},
-			function(data, textStatus) {
-				$("#bookShelf").scrollTop(0);
-				if (data.checkedout) {
-					$("#bookShelfUpdateLabel").text("Book checked out successfully!");
-				} else {
-					$("#bookShelfUpdateLabel").text("Check out unsuccessful: " + data.reason);
-				}
-			});
-	};
+  return function() {
+    $.post('/checkout_book',
+      {username: currentUsername,
+       isbn: bookIsbn
+      },
+      function(data, textStatus) {
+        $("#bookShelf").scrollTop(0);
+        if (data.checkedout) {
+          $("#bookShelfUpdateLabel").text("Book checked out successfully!");
+        } else {
+          $("#bookShelfUpdateLabel").text("Check out unsuccessful: " + data.reason);
+        }
+      });
+  };
 };
 
 var returnHandlerMaker = function(bookIsbn) {
@@ -44,67 +189,67 @@ var returnHandlerMaker = function(bookIsbn) {
 };
 
 var deleteHandlerMaker = function(type, identifier) {
-	switch(type) {
-		case "book":
-			return function () {
-				$.post('/delete_book',
-					{isbn: identifier},
-					function(data, textStatus) {
-						$("#bookShelf").scrollTop(0);
-						if (data) {
-							$("#bookShelfUpdateLabel")
-							.text("Book was deleted successfully! Updating list...");
-							setTimeout(function() {
-								// Perform same search as user so the list of books only shows
-								// what the user wanted.
-								if (selectedFilter && searchBarQuery) {
-									performSearch(selectedFilter, searchBarQuery);
-								} else {
-									loadBooks();
-								}
-							}, 1000);
-						} else {
-							$("#bookShelfUpdateLabel").text("Book deletion was unsuccessful!");
-						}
-					});
-			};
-			break;
-		case "customer":
-			return function () {
-				$.post('/delete_customer',
-				{account_no: identifier},
-				function(data, textStatus) {
-					$("#bookShelf").scrollTop(0);
-					if (data) {
-						$("#bookShelfUpdateLabel")
-						.text("User was deleted successfully! Updating list...");
-						setTimeout(loadCustomers, 1000);
-					} else {
-						$("#bookShelfUpdateLabel").text("User deletion was unsuccessful!");
-					}
-				});
-			};
-			break;
-	}
+  switch(type) {
+    case "book":
+      return function () {
+        $.post('/delete_book',
+          {isbn: identifier},
+          function(data, textStatus) {
+            $("#bookShelf").scrollTop(0);
+            if (data) {
+              $("#bookShelfUpdateLabel")
+              .text("Book was deleted successfully! Updating list...");
+              setTimeout(function() {
+                // Perform same search as user so the list of books only shows
+                // what the user wanted.
+                if (selectedFilter && searchBarQuery) {
+                  performSearch(selectedFilter, searchBarQuery);
+                } else {
+                  loadBooks();
+                }
+              }, 1000);
+            } else {
+              $("#bookShelfUpdateLabel").text("Book deletion was unsuccessful!");
+            }
+          });
+      };
+      break;
+    case "customer":
+      return function () {
+        $.post('/delete_customer',
+        {account_no: identifier},
+        function(data, textStatus) {
+          $("#bookShelf").scrollTop(0);
+          if (data) {
+            $("#bookShelfUpdateLabel")
+            .text("User was deleted successfully! Updating list...");
+            setTimeout(loadCustomers, 1000);
+          } else {
+            $("#bookShelfUpdateLabel").text("User deletion was unsuccessful!");
+          }
+        });
+      };
+      break;
+  }
 };
 
 var checkBookCheckedoutStatus = function(bookIsbn) {
-	var result = false;
-	$.ajax({
+  var result = false;
+  $.ajax({
           url:  "/check_book",
           type: "POST",
           data: {username: currentUsername,
-          			 isbn: bookIsbn},
+                 isbn: bookIsbn},
           async: false,
           success: function(data){
             result = data.checkedoutState;
           }
        });
-	return result;
+  return result;
 }
 
 var performSearch = function(filter, query) {
-	switch (filter) {
+  switch (filter) {
     case "byTitle":
       $.post('/get_books',
         {admin: adminBoolean,
@@ -112,11 +257,11 @@ var performSearch = function(filter, query) {
          column: "title" 
         },
         function (data, textStatus) {
-        	if (jQuery.isEmptyObject(data)) {
-        		$("#bookShelfUpdateLabel").text("No results found!");
-        	} else {
-          	printBookData(data);
-          	searchShowing = false;
+          if (jQuery.isEmptyObject(data)) {
+            $("#bookShelfUpdateLabel").text("No results found!");
+          } else {
+            printBookData(data);
+            searchShowing = false;
           }
         });
       break;
@@ -128,45 +273,45 @@ var performSearch = function(filter, query) {
         },
         function (data, textStatus) {
           if (jQuery.isEmptyObject(data)) {
-        		$("#bookShelfUpdateLabel").text("No results found!");
-        	} else {
-          	printBookData(data);
-          	searchShowing = false;
+            $("#bookShelfUpdateLabel").text("No results found!");
+          } else {
+            printBookData(data);
+            searchShowing = false;
           }
         });
       break;
 
     case "byId":
-    	$.post('/get_users',
-    		{key: query,
-    		 column: "account_no"
-    		},
-    		function (data, textStatus) {
-    			if (jQuery.isEmptyObject(data)) {
-        		$("#bookShelfUpdateLabel").text("No results found!");
-        	} else {
-          	printUserData(data);
-          	searchShowing = false;
+      $.post('/get_users',
+        {key: query,
+         column: "account_no"
+        },
+        function (data, textStatus) {
+          if (jQuery.isEmptyObject(data)) {
+            $("#bookShelfUpdateLabel").text("No results found!");
+          } else {
+            printUserData(data);
+            searchShowing = false;
           }
-    		});
+        });
       break;
 
     case "byName":
-    	$.post('/get_users',
-    		{key: query,
-    		 column: "username"
-    		},
-    		function (data, textStatus) {
-    			if (jQuery.isEmptyObject(data)) {
-        		$("#bookShelfUpdateLabel").text("No results found!");
-        	} else {
-          	printUserData(data);
-          	searchShowing = false;
+      $.post('/get_users',
+        {key: query,
+         column: "username"
+        },
+        function (data, textStatus) {
+          if (jQuery.isEmptyObject(data)) {
+            $("#bookShelfUpdateLabel").text("No results found!");
+          } else {
+            printUserData(data);
+            searchShowing = false;
           }
-    		});
+        });
       break;
     default:
-    	$("#bookShelfUpdateLabel").text("Please select a filter!");
+      $("#bookShelfUpdateLabel").text("Please select a filter!");
       break;
   }
 };
@@ -180,7 +325,7 @@ var loadBooks = function() {
 };
 
 var loadCustomers = function() {
-	$.post('/get_users',
+  $.post('/get_users',
     function(data, textStatus) {
       printUserData(data);
     });
@@ -188,106 +333,118 @@ var loadCustomers = function() {
 
 var printBookData = function(data) {
   if (!jQuery.isEmptyObject(data)) {
-	  var content = bookShelfUpdateLabel;
-	  content += "<div id='bookShelfList'>";
-	  for (var book in data) {
-	    content += "<div class='shelfEntry'>"
-	    for (var info in data[book]) {
-	      switch (info) {
-	        case "cover":
-	        	content += "<img class='bookCover' src='" + data[book][info]
-	        					+ "' />";
-	        	break;
-	        case "author":
-	        	content += "<span class='bookInfo'>By " + data[book][info] + "</span>";
-	        	break;
-	        case "title":
-	          content += "<a class='bookTitle'>" + data[book][info]
-	                  + "</a>";
-	          break;
-	        case "description":
-	          content += "<p class='bookDescription'>" + data[book][info]
-	                  + "</p>"
-	          break;
-	      }
-	    }
-	    if (adminBoolean) {
-	      content += "<button id='deleteBook" + data[book]["isbn"]
-				        + "' class='optionButtons'>Delete"
-	      				+ "</button>";
-	      $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
-      		deleteHandlerMaker("book", data[book]["isbn"]));
-	    } else {
-	    	if (!checkBookCheckedoutStatus(data[book]["isbn"])) {
-					content += "<button id='checkoutBook" + data[book]["isbn"]
-					    		+ "' class='optionButtons'>Check Out"
-					  	    + "</button>";
-					$("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
-						checkoutHandlerMaker(data[book]["isbn"]));
-				} else {
-					content += "<button id='returnBook" + data[book]["isbn"]
-					    		+ "' class='optionButtons'>Return"
-					  	    + "</button>";
+    var content = bookShelfUpdateLabel;
+    content += "<div id='bookShelfList'>";
+    for (var book in data) {
+      content += "<div class='shelfEntry'>"
+      for (var info in data[book]) {
+        switch (info) {
+          case "cover":
+            content += "<img class='bookCover' src='" + data[book][info]
+                    + "' />";
+            break;
+          case "author":
+            content += "<span class='bookInfo'>By " + data[book][info] + "</span>";
+            break;
+          case "title":
+            content += "<a class='bookTitle' id='showBookDetails"  + data[book]["isbn"]
+                    + "'>" + data[book][info]
+                    + "</a>";
+            $("#bookShelf").on("click", "#showBookDetails"
+              + data[book]["isbn"], 
+              showDetailsHandlerMaker("book", data[book]["isbn"]));
+            break;
+          case "description":
+            content += "<p class='bookDescription'>" + data[book][info]
+                    + "</p>"
+            break;
+        }
+      }
+      if (adminBoolean) {
+        content += "<button id='deleteBook" + data[book]["isbn"]
+                + "' class='optionButtons'>Delete"
+                + "</button>";
+        $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
+          deleteHandlerMaker("book", data[book]["isbn"]));
+      } else {
+        if (!checkBookCheckedoutStatus(data[book]["isbn"])) {
+          content += "<button id='checkoutBook" + data[book]["isbn"]
+                  + "' class='optionButtons'>Check Out"
+                  + "</button>";
+          if (data[book]["avail_copies"] == 0) {
+            // Do stuff!
+          } else {
+            $("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
+              checkoutHandlerMaker(data[book]["isbn"]));
+          }
+        } else {
+          content += "<button id='returnBook" + data[book]["isbn"]
+                  + "' class='optionButtons'>Return"
+                  + "</button>";
           $("#bookShelf").on("click", "#returnBook" + data[book]["isbn"],
             returnHandlerMaker(data[book]["isbn"]));
-				}
-			}
-	    content += "</div>";
-		}
-	  content += "</div>";
-	  $("#bookShelf").html(content);
-	} else {
-		var content = bookShelfUpdateLabel;
-		$("#bookShelf").html(content);
-		$("#bookShelfUpdateLabel").text("There are currently no books in the library!");
-	}
+        }
+      }
+      content += "</div>";
+    }
+    content += "</div>";
+    $("#bookShelf").html(content);
+  } else {
+    var content = bookShelfUpdateLabel;
+    $("#bookShelf").html(content);
+    $("#bookShelfUpdateLabel").text("There are currently no books in the library!");
+  }
 };
 
 var printUserData = function(data) {
-	if (!jQuery.isEmptyObject(data)) {
-	  var content = bookShelfUpdateLabel;
-	  content += "<div id='bookShelfList'>";
-	  for (var user in data) {
-	    content += "<div class='shelfEntry'>"
-	    for (var info in data[user]) {
-	      switch (info) {
-	        case "account_no":
-	          content += "<a class='accountNumber'>ID: " + data[user][info]
-	                  + "</a>";
-	          break;
-	        case "username":
-	          content += "<span class='userInfo'>Username: " + data[user][info]
-	                  + "</span>";
-	          break;
+  if (!jQuery.isEmptyObject(data)) {
+    var content = bookShelfUpdateLabel;
+    content += "<div id='bookShelfList'>";
+    for (var user in data) {
+      content += "<div class='shelfEntry'>"
+      for (var info in data[user]) {
+        switch (info) {
+          case "account_no":
+            content += "<a class='accountNumber' id='showUserDetails"
+                    + data[user][info] + "'>ID: " + data[user][info]
+                    + "</a>";
+            $("#bookShelf").on("click", "#showUserDetails"
+              + data[user][info], 
+              showDetailsHandlerMaker("customer", data[user][info]));
+            break;
+          case "username":
+            content += "<span class='userInfo'>Username: " + data[user][info]
+                    + "</span>";
+            break;
           case "last_name":
-	        	content += "<span class='userInfo'>Last Name: " + data[user][info]
-	                  + "</span>";
+            content += "<span class='userInfo'>Last Name: " + data[user][info]
+                    + "</span>";
             break;
           case "first_name":
-          	content += "<span class='userInfo'>First Name: " + data[user][info]
-	                  + "</span>";
-	          break;
+            content += "<span class='userInfo'>First Name: " + data[user][info]
+                    + "</span>";
+            break;
           case "admin":
-	        	content += "<span class='userInfo'>Admin: " + data[user][info]
-	                  + "</span>";
-	          break;   
-	      }
-	    }
+            content += "<span class='userInfo'>Admin: " + data[user][info]
+                    + "</span>";
+            break;   
+        }
+      }
       content += "<button id='deleteUser" + data[user]["account_no"]
-							+ "' class='optionButtons'>Delete"
+              + "' class='optionButtons'>Delete"
               + "</button>";
 
-    	$("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
-    		deleteHandlerMaker("customer", data[user]["account_no"]));
-	    content += "</div>";
-	  }
-	  content += "</div>";
-	  $("#bookShelf").html(content);
-	} else {
-		var content = bookShelfUpdateLabel;
-		$("#bookShelf").html(content);
-		$("#bookShelfUpdateLabel").text("There are currently no users in the database!");
-	}
+      $("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
+        deleteHandlerMaker("customer", data[user]["account_no"]));
+      content += "</div>";
+    }
+    content += "</div>";
+    $("#bookShelf").html(content);
+  } else {
+    var content = bookShelfUpdateLabel;
+    $("#bookShelf").html(content);
+    $("#bookShelfUpdateLabel").text("There are currently no users in the database!");
+  }
 };
 
 $("#logout").click(function() {
@@ -346,17 +503,9 @@ function checkNewBookForm() {
   }
 }
 
-// Make new book with form ajax
+
 $(document).ready(function() { 
-  $('#new_book_form').ajaxForm({
-    success: function(data, textStatus) {
-        if (data.completed) {
-          clearHiddenForms();
-        } else {
-          $(".updateLabel").text('Failed to submit new book.');
-        }
-      }
-    });
+ 
 }); 
 
 $(".cancel").click(function() {
@@ -460,7 +609,7 @@ function getRight(el) {
 
 $("#filter").click(function() {
   if (!searchShowing) {
-  	selectedFilter = "";
+    selectedFilter = "";
     bookShelfContent = $("#bookShelf").html();
     var filterHtml = bookShelfUpdateLabel;
     filterHtml += "<input type='text' id='searchBar'"
@@ -543,12 +692,24 @@ $("#bookShelf").on("change", "input[name='searchFilters']", function() {
 });
 
 $("#list_books").click(function() {
-	loadBooks();
+  loadBooks();
 });
 
 $("#list_users").click(function() {
-	loadCustomers();
+  loadCustomers();
 });
 
-$(document).ready(loadBooks);
+$(document).ready(function() {
+  loadBooks();
+
+  // Make new book with form ajax
+  $('#new_book_form').ajaxForm({
+  success: function(data, textStatus) {
+    if (data.completed) {
+      clearHiddenForms();
+    } else {
+      $(".updateLabel").text('Failed to submit new book.');
+    }
+  }});
+});
 

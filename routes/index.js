@@ -273,3 +273,25 @@ exports.return_book = function(req, res) {
     res.json({completed: success, reason: err});
   });
 };
+
+exports.get_book = function(req, res) {
+  database.getBookDetails(req.body, function(data) {
+    if (data.length > 0) {
+      var jsonBookObject = makeJSONObject(data, "book");
+      res.json(jsonBookObject);
+    } else {
+      res.json(new Object());
+    }
+  });
+};
+
+exports.get_user = function(req, res) {
+  database.getUserDetails(req.body, function(data) {
+    if (data.length > 0) {
+      var jsonUserObject = makeJSONObject(data, "user");
+      res.json(jsonUserObject);
+    } else {
+      res.json(new Object());
+    }
+  });
+};

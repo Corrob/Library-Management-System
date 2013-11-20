@@ -314,6 +314,43 @@ module.exports = {
           }
         });
     }); 
+  },
+
+  getBookDetails: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+       if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getBookDetailsQuery("book", data.isbn), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading book table', err);
+        }
+
+        callback(results.rows);
+      }); 
+   });
+  },
+
+  getUserDetails: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+       if (err) {
+        callback(new Array());
+        return console.error('error fetching client from pool', err);
+      }
+      client.query(getUserDetailsQuery("customer", data.account_no), function(err, results) {
+        done();
+        if (err) {
+          callback(new Array());
+          return console.error('error reading customer table', err);
+        }
+
+        callback(results.rows);
+      });
+   });
   }
 };
 
@@ -466,3 +503,16 @@ getCoverByISBNQuery = function(data) {
   return "SELECT cover FROM book WHERE isbn='" + data.isbn + "';";
 };
 
+getBookDetailsQuery = function(table, isbn) {
+  var query = "SELECT * FROM " + table + " WHERE isbn ='"
+            + isbn + "'";
+  query += ";";
+  return query;
+};
+
+getUserDetailsQuery = function(table, accountNumber) {
+  var query = "SELECT * FROM " + table + " WHERE account_no ="
+            + accountNumber;
+  query += ";";
+  return query;
+};

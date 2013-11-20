@@ -43,6 +43,8 @@ app.post('/delete_book', routes.delete_book);
 app.post('/checkout_book', routes.checkout_book);
 app.post('/check_book', routes.check_book);
 app.post('/return_book', routes.return_book);
+app.post('/get_book', routes.get_book);
+app.post('/get_user', routes.get_user);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Server listening on port ' + app.get('port'));
