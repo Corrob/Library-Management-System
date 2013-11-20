@@ -422,23 +422,17 @@ getMaxAccountNoQuery = function() {
 };
 
 getAllBooksQuery = function(table, admin) {
-  var query = "SELECT cover, isbn, title, author, description FROM " + table;
+  var query = "SELECT cover, isbn, title, author, description, avail_copies FROM "
+                  + table;
   
-  /*if (admin === "false") {
-    query += " WHERE avail_copies > 0";
-  }*/
   query += ";";
   return query;
 };
 
 getBooksByKeywordQuery = function(table, admin, keywords, column) {
-  var query = "SELECT cover, isbn, title, author, description FROM " + table
+  var query = "SELECT cover, isbn, title, author, description, avail_copies FROM " + table
             + " WHERE position('" + keywords + "' in upper(" + column
             + ")) > 0";
-
-  if (admin === "false") {
-    query += " AND avail_copies > 0";
-  }
 
   query += ";";
   return query;

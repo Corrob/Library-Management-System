@@ -377,12 +377,13 @@ var printBookData = function(data) {
           deleteHandlerMaker("book", data[book]["isbn"]));
       } else {
         if (!checkBookCheckedoutStatus(data[book]["isbn"])) {
-          content += "<button id='checkoutBook" + data[book]["isbn"]
-                  + "' class='optionButtons'>Check Out"
-                  + "</button>";
           if (data[book]["avail_copies"] == 0) {
-            // Do stuff!
+            content += "<span class='bookInfoUpdate'>All copies are checked out!"
+                         + "</span>";
           } else {
+            content += "<button id='checkoutBook" + data[book]["isbn"]
+                         + "' class='optionButtons'>Check Out"
+                         + "</button>";
             $("#bookShelf").off("click", "#checkoutBook" + data[book]["isbn"]);
             $("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
               checkoutHandlerMaker(data[book]["isbn"]));

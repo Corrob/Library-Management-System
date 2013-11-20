@@ -188,11 +188,12 @@ div.inputLines {
 
 .descriptionBox {
   vertical-align: text-top;
-  width: 151px;
+  width: 170px;
 }
 
 #descriptionBoxLabel {
   display: inline-block;
+  float: left;
   text-align: left;
   width: 100px;
 }
@@ -416,6 +417,16 @@ span.bookInfo {
   display: block;
   margin: 5px 0px 5px 0px;
   font-size: 16px;
+  text-shadow: 0px 0px 5px #FFFFFF;
+}
+
+span.bookInfoUpdate {
+  display: block;
+  margin: 5px 0px 5px 0px;
+  font-size: 16px;
+  font-style: italic;
+  text-align: center;
+  color: #FF0000;
   text-shadow: 0px 0px 5px #FFFFFF;
 }
 
