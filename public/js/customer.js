@@ -61,12 +61,9 @@ var showDetailsHandlerMaker = function(type, identifier) {
                         + " class='optionButtons detailButtons'>Edit</button>";
 
               }
-              content += "<button id='back'"
+              content += "<button id='backBooks'"
                       + " class='optionButtons detailButtons'>Back</button>";
-              $("#bookShelf").on("click", "#back", function() {
-                $("#bookShelf").html(bookShelfContent);
-              });
-                            
+
               content += "</div>";
               content += "</div>";
               bookShelfContent = $("#bookShelf").html();
@@ -137,12 +134,9 @@ var showDetailsHandlerMaker = function(type, identifier) {
               content += "<button id='editUser" + data["user0"]["account_no"] + "'"
                       + " class='optionButtons detailButtons'>Edit</button>";
 
-              content += "<button id='back'"
+              content += "<button id='backUsers'"
                       + " class='optionButtons detailButtons'>Back</button>";
-              $("#bookShelf").on("click", "#back", function() {
-                $("#bookShelf").html(bookShelfContent);
-              });
-                            
+
               content += "</div>";
               content += "</div>";
               bookShelfContent = $("#bookShelf").html();
@@ -697,6 +691,22 @@ $("#list_books").click(function() {
 
 $("#list_users").click(function() {
   loadCustomers();
+});
+
+$("#bookShelf").on("click", "#backBooks", function() {
+  if (selectedFilter && searchBarQuery) {
+    performSearch(selectedFilter, searchBarQuery);
+  } else {
+    loadBooks();
+  }
+});
+
+$("#bookShelf").on("click", "#backUsers", function() {
+  if (selectedFilter && searchBarQuery) {
+    performSearch(selectedFilter, searchBarQuery);
+  } else {
+    loadCustomers();
+  }
 });
 
 $(document).ready(function() {
