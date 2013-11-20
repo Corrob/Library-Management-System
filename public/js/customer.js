@@ -40,42 +40,43 @@ var showDetailsHandlerMaker = function(type, identifier) {
               for (var info in data["book0"]) {
                 switch (info) {
                   case "author":
-                    content += "<span class='bookInfo'>By: " + data["book0"][info] + "</span>";
+                    content += "<span class='bookInfo'><strong>By:</strong> " + data["book0"][info] + "</span>";
                     break;
                   case "title":
-                    content += "<span class='bookInfo'>Title: "
+                    content += "<span class='bookInfo'><strong>Title:</strong> "
                             + data["book0"][info]
                             + "</span>";
                     break;
                   case "isbn":
-                    content += "<span class='bookInfo'>ISBN: " + data["book0"][info]
-                            + "</span>";
+                    content += "<span class='bookInfo'><strong>ISBN:</strong> "
+                                 + data["book0"][info] + "</span>";
                     break;
                   case "genre":
-                    content += "<span class='bookInfo'>Genre: " + data["book0"][info]
-                            + "</span>";
+                    content += "<span class='bookInfo'><strong>Genre:</strong> "
+                                 + data["book0"][info] + "</span>";
                     break;
                   case "sample":
                     content += "";
                     break;
                   case "total_copies":
-                    content += "<span class='bookInfo'>Total Copies in Library: "
+                    content += "<span class='bookInfo'><strong>Total Copies in Library:</strong> "
                             + data["book0"][info] + "</span>";
                     break;
                   case "avail_copies":
-                    content += "<span class='bookInfo'>Available Copies: "
+                    content += "<span class='bookInfo'><strong>Available Copies:</strong> "
                             + data["book0"][info] + "</span>";
                    break;
                 }
               } 
-              content += "<span class='bookInfo'>Description: </span>"
+              content += "<span class='bookInfo'><strong>Description:</strong> </span>"
                       + "<p class='bookDescription'>" + data["book0"]["description"]
                       + "</p>";
               content += "<div id='detailButtonContainer'>";
               if (adminBoolean) {
                 content += "<button id='editBook" + data["book0"]["isbn"] + "'"
                         + " class='optionButtons detailButtons'>Edit</button>";
-
+                $("#bookShelf").off("click", "#editBook" + data["book0"]["isbn"]);
+                // PUT CLICK HANDLER HERE.
               }
               content += "<button id='backBooks'"
                       + " class='optionButtons detailButtons'>Back</button>";
@@ -99,43 +100,44 @@ var showDetailsHandlerMaker = function(type, identifier) {
               for (var info in data["user0"]) {
                 switch (info) {
                   case "account_no":
-                    content += "<span class='userInfo'>User ID: " + data["user0"][info] + "</span>";
+                    content += "<span class='userInfo'><strong>User ID:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "username":
-                    content += "<span class='userInfo'>Username: "
+                    content += "<span class='userInfo'><strong>Username:</strong> "
                             + data["user0"][info]
                             + "</span>";
                     break;
                   case "last_name":
-                    content += "<span class='userInfo'>Last Name: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>Last Name:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "first_name":
-                    content += "<span class='userInfo'>First Name: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>First Name:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "street":
-                    content += "<span class='userInfo'>Street Address: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>Street Address:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "city":
-                    content += "<span class='userInfo'>City: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>City:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "state":
-                    content += "<span class='userInfo'>State: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>State:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "zip":
-                    content += "<span class='userInfo'>ZIP code: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>ZIP code:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "email":
-                    content += "<span class='userInfo'>Email Address: " + data["user0"][info]
-                            + "</span>";
+                    content += "<span class='userInfo'><strong>Email Address:</strong> "
+                                 + data["user0"][info] + "</span>";
                     break;
                   case "admin":
-                    content += "<span class='userInfo'>Admin: ";
+                    content += "<span class='userInfo'><strong>Admin:</strong> ";
                     if (data["user0"][info]) {
                       content += "YES";
                     } else {
@@ -149,6 +151,9 @@ var showDetailsHandlerMaker = function(type, identifier) {
 
               content += "<button id='editUser" + data["user0"]["account_no"] + "'"
                       + " class='optionButtons detailButtons'>Edit</button>";
+
+              $("#bookShelf").off("click", "#editUser" + data["user0"]["account_no"]);
+              // PUT EVENT HANDLER HERE.
 
               content += "<button id='backUsers'"
                       + " class='optionButtons detailButtons'>Back</button>";
@@ -348,7 +353,7 @@ var printBookData = function(data) {
                     + "' />";
             break;
           case "author":
-            content += "<span class='bookInfo'>By " + data[book][info] + "</span>";
+            content += "<span class='bookInfo'><strong>By</strong> " + data[book][info] + "</span>";
             break;
           case "title":
             content += "<a class='bookTitle' id='showBookDetails"  + data[book]["isbn"]
@@ -417,20 +422,20 @@ var printUserData = function(data) {
               showDetailsHandlerMaker("customer", data[user][info]));
             break;
           case "username":
-            content += "<span class='userInfo'>Username: " + data[user][info]
-                    + "</span>";
+            content += "<span class='userInfo'><strong>Username:</strong> "
+                         + data[user][info] + "</span>";
             break;
           case "last_name":
-            content += "<span class='userInfo'>Last Name: " + data[user][info]
-                    + "</span>";
+            content += "<span class='userInfo'><strong>Last Name:</strong> "
+                         + data[user][info] + "</span>";
             break;
           case "first_name":
-            content += "<span class='userInfo'>First Name: " + data[user][info]
-                    + "</span>";
+            content += "<span class='userInfo'><strong>First Name:</strong> "
+                         + data[user][info] + "</span>";
             break;
           case "admin":
-            content += "<span class='userInfo'>Admin: " + data[user][info]
-                    + "</span>";
+            content += "<span class='userInfo'><strong>Admin:</strong> "
+                         + data[user][info] + "</span>";
             break;   
         }
       }
@@ -483,6 +488,7 @@ $("#submit_new_customer").click(function() {
       if (data.completed) {
         if (!data.exists) {
           clearHiddenForms();
+          $("#bookShelf").scrollTop(0);
           $("#bookShelfUpdateLabel")
           .text("Customer successfully added! Updating list...");
           refreshView("customer");
@@ -550,7 +556,7 @@ function updateInfo(e) {
     $('#y1').val(e.y);
     $('#x2').val(e.x2);
     $('#y2').val(e.y2);
-};
+}
 
 // Code from http://www.script-tutorials.com/html5-image-uploader-with-jcrop/
 function fileSelectHandler() {
@@ -725,6 +731,7 @@ $(document).ready(function() {
   success: function(data, textStatus) {
     if (data.completed) {
       clearHiddenForms();
+      $("#bookShelf").scrollTop(0);
       $("#bookShelfUpdateLabel")
       .text("Book successfully added to the library! Updating list...");
       refreshView("book");
