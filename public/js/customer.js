@@ -383,6 +383,7 @@ var printBookData = function(data) {
           if (data[book]["avail_copies"] == 0) {
             // Do stuff!
           } else {
+            $("#bookShelf").off("click", "#checkoutBook" + data[book]["isbn"]);
             $("#bookShelf").on("click", "#checkoutBook" + data[book]["isbn"],
               checkoutHandlerMaker(data[book]["isbn"]));
           }
@@ -390,6 +391,7 @@ var printBookData = function(data) {
           content += "<button id='returnBook" + data[book]["isbn"]
                   + "' class='optionButtons'>Return"
                   + "</button>";
+          $("#bookShelf").off("click", "#returnBook" + data[book]["isbn"]);
           $("#bookShelf").on("click", "#returnBook" + data[book]["isbn"],
             returnHandlerMaker(data[book]["isbn"]));
         }

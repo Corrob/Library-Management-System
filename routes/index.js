@@ -160,8 +160,6 @@ function addBookToDB(req, res) {
   delete req.body.y1;
   delete req.body.y2;
 
-  console.log("Adding to database now.");
-
   database.addNewData(req.body, "book", function(success) {
     res.json({completed: success});
   });
