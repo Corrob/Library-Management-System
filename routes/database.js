@@ -110,6 +110,44 @@ module.exports = {
     });
   },
 
+  updateBook: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false);
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getUpdateDataQuery(data, data.isbn, "book"), function(err, results) {
+        done();
+        if (err) {
+          callback(false);
+          return console.error('error updating data', err);
+        }
+
+        callback(true);
+      });
+    });
+  },
+
+  updateUser: function(data, callback) {
+    pg.connect(dbString, function(err, client, done) {
+      if (err) {
+        callback(false);
+        return console.error('error fetching client from pool', err);
+      }
+
+      client.query(getUpdateDataQuery(data, data.username, "customer"), function(err, results) {
+        done();
+        if (err) {
+          callback(false);
+          return console.error('error updating data', err);
+        }
+
+        callback(true);
+      });
+    });
+  },
+
   getMaxAccountNo: function(callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
@@ -506,5 +544,31 @@ getUserDetailsQuery = function(table, accountNumber) {
   var query = "SELECT * FROM " + table + " WHERE account_no ="
             + accountNumber;
   query += ";";
+  return query;
+};
+
+getUpdateDataQuery = function(data, identifier, table) {
+  var query = "UPDATE " + table + " SET ";
+  for (var column in data) {
+    if (column != "isbn" && column != "username") {
+      query += column + " = ";
+      if (column != "avail_copies" && column != "total_copies") {
+        query += "'" + data[column] + "'"; 
+      } else {
+        query += data[column];
+      }
+      query += ", ";
+    }
+  }
+  query = query.substring(0, query.length - 2) + " "; // Remove last comma
+  query += "WHERE ";
+  if (table == "book") {
+    query += "isbn =";
+  } else {
+    query += "username =";
+  }
+  query += " '" + identifier + "'";
+  query += ";";
+
   return query;
 };

@@ -58,7 +58,7 @@ block content
           .checkboxInputLine
             input(type="checkbox", id="admin")
             label(for="admin" class="checkBoxLabel") Admin
-          button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Sumbit New Customer
+          button(id="submit_new_customer" class="optionButtons hiddenFormButtons") Submit New Customer
           button(class="optionButtons hiddenFormButtons cancel") Cancel
         .hiddenForm#new_book_form(style="display: none;")
           .updateContainer
@@ -78,9 +78,9 @@ block content
             .inputLines
               label(for="author" class="inputLineLabels") Author:
               input(type="text", name="author", style="display: inline-block;", class="formTextbox")
-            .inputLines
-              label(for="description" id="descriptionBoxLabel") Description:
-              textarea(id="description", name="description", style="display: inline-block;", class="formTextbox descriptionBox", rows=5, columns=30)
+            #descriptionBoxLabel
+              label(for="description") Description:
+            textarea(id="description", name="description", style="display: inline-block;", class="formTextbox descriptionBox", rows=5, columns=30)
             .inputLines
               label(for="genre" class="inputLineLabels") Genre:
               input(type="text", name="genre", style="display: inline-block;", class="formTextbox")
@@ -88,9 +88,9 @@ block content
               label(for="copies" class="inputLineLabels") Copies:
               input(type="text", id="copies", name="copies", style="display: inline-block;", class="formTextbox")
             .inputLines
-              label(for="cover" class="inputLineLabels") Cover Image:
+              label(for="cover" id="coverLabel") Cover Image:
               input(type="file", name="cover", id="cover", onchange="fileSelectHandler()");
-            button(type="submit" id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
+            button(type="submit" id="submit_new_book" class="optionButtons hiddenFormButtons") Submit New Book
             button(class="optionButtons hiddenFormButtons cancel") Cancel
       #options
         #optionsLabel

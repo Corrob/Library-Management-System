@@ -8,6 +8,7 @@ var bookShelfUpdateLabel = "<div class='updateContainer'>"
 
 var jcrop_api;
 var canSubmitNewBook = true;
+var isUpdate = false;
 
 var refreshView = function(type) {
   setTimeout(function() {
@@ -76,7 +77,32 @@ var showDetailsHandlerMaker = function(type, identifier) {
                 content += "<button id='editBook" + data["book0"]["isbn"] + "'"
                         + " class='optionButtons detailButtons'>Edit</button>";
                 $("#bookShelf").off("click", "#editBook" + data["book0"]["isbn"]);
-                // PUT CLICK HANDLER HERE.
+                $("#bookShelf").on("click", "#editBook" + data["book0"]["isbn"], function() {
+                  clearHiddenForms();
+                  isUpdate = true;
+                  $("#new_book_form").show();
+                  $("#coverLabel").text("Change Cover Image:");
+                  $("#submit_new_book").text("Save Changes");
+                  $("form#new_book_form").children().each(
+                    function() {
+                      if ($(this).attr("id") == "description") {
+                        $(this).val(data["book0"]["description"]);
+                      }
+                    });
+                  $("form#new_book_form .inputLines").children().each(
+                    function() {
+                    if ($(this).attr("name") != "undefined") {
+                      if ($(this).attr("name") == "copies") {
+                       $(this).val(data["book0"]["total_copies"]);
+                      } else if ($(this).attr("name") == "isbn") {
+                        $(this).attr("readonly", true);
+                        $(this).val(data["book0"][$(this).attr("name")]);
+                      } else if ($(this).attr("name") != "cover") {
+                        $(this).val(data["book0"][$(this).attr("name")]);
+                      }
+                    }
+                  });
+                });
               }
               content += "<button id='backBooks'"
                       + " class='optionButtons detailButtons'>Back</button>";
@@ -153,7 +179,20 @@ var showDetailsHandlerMaker = function(type, identifier) {
                       + " class='optionButtons detailButtons'>Edit</button>";
 
               $("#bookShelf").off("click", "#editUser" + data["user0"]["account_no"]);
-              // PUT EVENT HANDLER HERE.
+              $("#bookShelf").on("click", "#editUser" + data["user0"]["account_no"], function() {
+                clearHiddenForms();
+                isUpdate = true;
+                $("#new_customer_form").show();
+                $("#submit_new_customer").text("Save Changes");
+                $("#admin").prop("checked", data["user0"]["admin"]);
+                $("#username").attr("readonly", true);
+                $("#new_customer_form .inputLines").children().each(
+                  function() {
+                  if ($(this).attr("id") != "undefined") {
+                   $(this).val(data["user0"][$(this).attr("id")]);
+                  }
+                });
+              });
 
               content += "<button id='backUsers'"
                       + " class='optionButtons detailButtons'>Back</button>";
@@ -470,11 +509,13 @@ $("#new_customer").click(function() {
 
 $("#new_book").click(function() {
   clearHiddenForms();
+  isUpdate = false;
   $("#new_book_form").show();
 });
 
 $("#submit_new_customer").click(function() {
-  $.post('/new_customer', {username : $("#username").val(), 
+  $.post('/new_customer', {update: isUpdate,
+                           username : $("#username").val(), 
                            password : $("#password").val(),
                            last_name : $("#last_name").val(),
                            first_name : $("#first_name").val(),
@@ -489,14 +530,23 @@ $("#submit_new_customer").click(function() {
         if (!data.exists) {
           clearHiddenForms();
           $("#bookShelf").scrollTop(0);
-          $("#bookShelfUpdateLabel")
-          .text("Customer successfully added! Updating list...");
+          if (isUpdate) {
+            $("#bookShelfUpdateLabel")
+            .text("Customer updated added! Updating list...");
+          } else {
+            $("#bookShelfUpdateLabel")
+            .text("Customer successfully added! Updating list...");
+          }
           refreshView("customer");
         } else {
           $(".updateLabel").text('Username already exists.');
         }
       } else {
-        $(".updateLabel").text('Failed to submit new customer.');
+        if (isUpdate) {
+          $(".updateLabel").text('Failed to update customer.');
+        } else {
+          $(".updateLabel").text('Failed to submit new customer.');
+        }
       }
     });
 });
@@ -526,8 +576,14 @@ var isPositiveInt = function(str) {
 }
 
 var clearHiddenForms = function() {
+  $("#submit_new_book").text("Submit New Book");
+  $("#submit_new_customer").text("Submit New Customer");
+  $("#coverLabel").text("Change Image:");
+  $("form#new_book_form #isbn").attr("readonly", false);
+  $("#username").attr("readonly", false);
+
   $(".hiddenForm input[type=text]").each(function() {
-    $(this).val("");  
+    $(this).val("");
   });
   
   $(".hiddenForm input[type=password]").each(function() {
@@ -728,15 +784,25 @@ $(document).ready(function() {
 
   // Make new book with form ajax
   $('#new_book_form').ajaxForm({
+  data: {update: isUpdate},
   success: function(data, textStatus) {
     if (data.completed) {
       clearHiddenForms();
       $("#bookShelf").scrollTop(0);
-      $("#bookShelfUpdateLabel")
-      .text("Book successfully added to the library! Updating list...");
+      if (isUpdate) {
+        $("#bookShelfUpdateLabel")
+        .text("Book successfully updated! Updating list...");
+      } else {
+        $("#bookShelfUpdateLabel")
+        .text("Book successfully added to the library! Updating list...");
+      }
       refreshView("book");
     } else {
-      $(".updateLabel").text('Failed to submit new book.');
+      if (isUpdate) {
+        $(".updateLabel").text('Failed to update book.');
+      } else {
+        $(".updateLabel").text('Failed to submit new book.');
+      }
     }
   }});
 });
