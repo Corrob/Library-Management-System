@@ -65,24 +65,32 @@ exports.logout = function(req, res) {
 };
 
 exports.new_customer = function(req, res) {
-  database.getMaxAccountNo(function(max) {
-    if (max === -1) {
-      res.json({completed:false, exists: false});
-    } else {
-      req.body["account_no"] = max + 1;
-      database.checkData({username: req.body.username}, "customer", function(exists, error) {
-        if (error) {
-          res.json({completed: false, exists: false});
-        } else if (exists) {
-          res.json({completed: true, exists: true});
-        } else { 
-          database.addNewData(req.body, "customer", function(success) {
-            res.json({completed: success, exists: false});
-          });
-        }
-      });
-    }
-  });
+  if (req.body.update == "true") {
+    delete req.body.update;
+    database.updateUser(req.body, function(success) {
+      res.json({completed: success, exists: false});
+    });
+  } else{
+    delete req.body.update;
+    database.getMaxAccountNo(function(max) {
+      if (max === -1) {
+        res.json({completed:false, exists: false});
+      } else {
+        req.body["account_no"] = max + 1;
+        database.checkData({username: req.body.username}, "customer", function(exists, error) {
+          if (error) {
+            res.json({completed: false, exists: false});
+          } else if (exists) {
+            res.json({completed: true, exists: true});
+          } else { 
+            database.addNewData(req.body, "customer", function(success) {
+              res.json({completed: success, exists: false});
+            });
+          }
+        });
+      }
+    });
+  }
 };
 
 exports.new_book = function(req, res) {
@@ -163,8 +171,13 @@ function uploadToS3(req, res) {
 }
 
 function uploadPdfToS3(req, res) {
+  console.log(req.body);
   if (req.files.sample == null || req.files.sample == '') {
-    addBookToDB(req, res);
+    if (req.body.update == "false") {
+      addBookToDB(req, res);
+    } else {
+      updateBook(req, res);
+    }
   } else {
     var headers = {
       'Content-Type' : req.files.sample.type,
@@ -179,7 +192,11 @@ function uploadPdfToS3(req, res) {
     }); 
     uploader.on('end', function(url) {
       req.body.sample = url;
-      addBookToDB(req, res);
+      if (req.body.update == "false") {
+        addBookToDB(req, res);
+      } else {
+        updateBook(req, res);
+      }
     });
   }
 }
@@ -189,8 +206,21 @@ function addBookToDB(req, res) {
   delete req.body.x2;
   delete req.body.y1;
   delete req.body.y2;
+  delete req.body.update;
 
   database.addNewData(req.body, "book", function(success) {
+    res.json({completed: success});
+  });
+}
+
+function updateBook(req, res) {
+  delete req.body.x1;
+  delete req.body.x2;
+  delete req.body.y1;
+  delete req.body.y2;
+  delete req.body.update;
+
+  database.updateBook(req.body, function(success) {
     res.json({completed: success});
   });
 }

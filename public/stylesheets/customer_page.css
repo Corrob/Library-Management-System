@@ -186,22 +186,31 @@ div.inputLines {
   -webkit-box-shadow: 0px 0px 8px #7bc1f7;
 }
 
-.descriptionBox {
-  vertical-align: text-top;
-  width: 170px;
-}
-
 #descriptionBoxLabel {
   display: inline-block;
-  float: left;
-  text-align: left;
-  width: 100px;
+}
+
+.descriptionBox {
+  width: 290px;
+  margin-bottom: 10px;
 }
 
 label.inputLineLabels {
   display: inline-block;
   text-align: left;
   width: 100px;
+}
+
+#coverLabel {
+  display: inline-block;
+  text-align: center;
+  width: 140px;
+}
+
+#sampleLabel {
+  display: inline-block;
+  text-align: center;
+  width: 140px;
 }
 
 /* CSS for search bar taken from html-generator.weebly.com */
