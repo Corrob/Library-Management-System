@@ -502,7 +502,13 @@ $("#submit_new_customer").click(function() {
 });
 
 function checkNewBookForm() {
-  if (!isPositiveInt($("#copies").val())) {
+  var sample = $('#sample').val();
+  var sampleExtension = sample.split('.').pop();
+
+  if (sample != '' && sampleExtension != 'pdf') {
+    $('.updateLabel').text('The sample must be a PDF file.');
+    return false;
+  } else if (!isPositiveInt($("#copies").val())) {
     $(".updateLabel").text('Copies field must be an integer.');
     return false;
   } else if ($("#isbn").val() == '') {

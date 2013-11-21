@@ -90,6 +90,9 @@ block content
             .inputLines
               label(for="cover" class="inputLineLabels") Cover Image:
               input(type="file", name="cover", id="cover", onchange="fileSelectHandler()");
+            .inputLines
+              label(for="sample" class="inputLineLabels") PDF Sample:
+              input(type="file", name="sample", id="sample")
             button(type="submit" id="submit_new_book" class="optionButtons hiddenFormButtons") Sumbit New Book
             button(class="optionButtons hiddenFormButtons cancel") Cancel
       #options
