@@ -168,7 +168,7 @@ function addBookToDB(req, res) {
 exports.get_books = function(req, res) {
   if (typeof req.body.keywords == "undefined" 
     && typeof req.body.column == "undefined") {
-    database.getAllBooks(req.body.admin, function(data) {
+    database.getAllBooks(function(data) {
       if (data.length > 0) {
         var jsonBooksObject = makeJSONObject(data, "book");
         res.json(jsonBooksObject);

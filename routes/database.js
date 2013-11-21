@@ -133,14 +133,14 @@ module.exports = {
     });
   },
 
-  getAllBooks: function(data, callback) {
+  getAllBooks: function(callback) {
     pg.connect(dbString, function(err, client, done) {
       if (err) {
         callback(new Array());
         return console.error('error fetching client from pool', err);
       }
 
-      client.query(getAllBooksQuery("book", data), function(err, results) {
+      client.query(getAllBooksQuery("book"), function(err, results) {
         done();
         if (err) {
           callback(new Array());
@@ -159,7 +159,7 @@ module.exports = {
         return console.error('error fetching client from pool', err);
       }
 
-      client.query(getBooksByKeywordQuery("book", data.admin, data.keywords,
+      client.query(getBooksByKeywordQuery("book", data.keywords,
         data.column), function(err, results) {
         done();
         if (err) {
@@ -421,7 +421,7 @@ getMaxAccountNoQuery = function() {
   return "SELECT MAX(account_no) FROM customer";
 };
 
-getAllBooksQuery = function(table, admin) {
+getAllBooksQuery = function(table) {
   var query = "SELECT cover, isbn, title, author, description, avail_copies FROM "
                   + table;
   
@@ -429,7 +429,7 @@ getAllBooksQuery = function(table, admin) {
   return query;
 };
 
-getBooksByKeywordQuery = function(table, admin, keywords, column) {
+getBooksByKeywordQuery = function(table, keywords, column) {
   var query = "SELECT cover, isbn, title, author, description, avail_copies FROM " + table
             + " WHERE position('" + keywords + "' in upper(" + column
             + ")) > 0";

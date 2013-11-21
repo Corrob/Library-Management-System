@@ -261,8 +261,7 @@ var performSearch = function(filter, query) {
   switch (filter) {
     case "byTitle":
       $.post('/get_books',
-        {admin: adminBoolean,
-         keywords: query.toUpperCase(),
+        {keywords: query.toUpperCase(),
          column: "title" 
         },
         function (data, textStatus) {
@@ -276,8 +275,7 @@ var performSearch = function(filter, query) {
       break;
     case "byAuthor":
       $.post('/get_books',
-        {admin: adminBoolean,
-         keywords: query.toUpperCase(),
+        {keywords: query.toUpperCase(),
          column: "author" 
         },
         function (data, textStatus) {
@@ -327,7 +325,6 @@ var performSearch = function(filter, query) {
 
 var loadBooks = function() {
   $.post('/get_books',
-    {admin: adminBoolean},
     function(data, textStatus) {
       printBookData(data);
     });
