@@ -163,21 +163,25 @@ function uploadToS3(req, res) {
 }
 
 function uploadPdfToS3(req, res) {
-  var headers = {
-    'Content-Type' : req.files.sample.type,
-    'x-amz-acl'    : 'public-read'
-  };
-
-  var uploader = client.upload(req.files.sample.path, 
-    req.body.isbn + Math.floor(Math.random()*10000000) + '.pdf', headers);
-  uploader.on('error', function(err) {
-    console.error("unable to upload:", err.stack);
-    res.json({completed: false});
-  }); 
-  uploader.on('end', function(url) {
-    req.body.sample = url;
+  if (req.files.sample == null || req.files.sample == '') {
     addBookToDB(req, res);
-  });
+  } else {
+    var headers = {
+      'Content-Type' : req.files.sample.type,
+      'x-amz-acl'    : 'public-read'
+    };
+
+    var uploader = client.upload(req.files.sample.path, 
+      req.body.isbn + Math.floor(Math.random()*10000000) + '.pdf', headers);
+    uploader.on('error', function(err) {
+      console.error("unable to upload:", err.stack);
+      res.json({completed: false});
+    }); 
+    uploader.on('end', function(url) {
+      req.body.sample = url;
+      addBookToDB(req, res);
+    });
+  }
 }
 
 function addBookToDB(req, res) {
@@ -275,7 +279,7 @@ function removeAmazonUrl(url) {
 };
 
 function deleteSample(req, res, sample) {
-  if (sample == '') {
+  if (sample == null || sample == '') {
     finishDeleteBook(req, res);
   } else {
     sample = removeAmazonUrl(sample); 

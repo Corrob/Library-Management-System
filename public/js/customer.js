@@ -56,7 +56,11 @@ var showDetailsHandlerMaker = function(type, identifier) {
                                  + data["book0"][info] + "</span>";
                     break;
                   case "sample":
-                    content += "";
+                    if (data["book0"][info] != null) {
+                      content += "<span class='bookInfo'><strong>Sample:</strong> "
+                                   + "<a href='" + data["book0"][info]
+                                   + "' target='_blank'>Link</a></span>";
+                    }
                     break;
                   case "total_copies":
                     content += "<span class='bookInfo'><strong>Total Copies in Library:</strong> "
@@ -65,7 +69,7 @@ var showDetailsHandlerMaker = function(type, identifier) {
                   case "avail_copies":
                     content += "<span class='bookInfo'><strong>Available Copies:</strong> "
                             + data["book0"][info] + "</span>";
-                   break;
+                    break;
                 }
               } 
               content += "<span class='bookInfo'><strong>Description:</strong> </span>"
@@ -356,6 +360,7 @@ var printBookData = function(data) {
             content += "<a class='bookTitle' id='showBookDetails"  + data[book]["isbn"]
                     + "'>" + data[book][info]
                     + "</a>";
+            $("#bookShelf").off("click", "#showBookDetails");
             $("#bookShelf").on("click", "#showBookDetails"
               + data[book]["isbn"], 
               showDetailsHandlerMaker("book", data[book]["isbn"]));
@@ -370,6 +375,7 @@ var printBookData = function(data) {
         content += "<button id='deleteBook" + data[book]["isbn"]
                 + "' class='optionButtons'>Delete"
                 + "</button>";
+        $("#bookShelf").off("click", "#deleteBook" + data[book]["isbn"]);
         $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
           deleteHandlerMaker("book", data[book]["isbn"]));
       } else {
@@ -417,6 +423,7 @@ var printUserData = function(data) {
             content += "<a class='accountNumber' id='showUserDetails"
                     + data[user][info] + "'>ID: " + data[user][info]
                     + "</a>";
+            $("#bookShelf").off("click", "#showUserDetails");
             $("#bookShelf").on("click", "#showUserDetails"
               + data[user][info], 
               showDetailsHandlerMaker("customer", data[user][info]));
@@ -443,6 +450,7 @@ var printUserData = function(data) {
               + "' class='optionButtons'>Delete"
               + "</button>";
 
+      $("#bookShelf").off("click", "#deleteUser" + data[user]["account_no"]);
       $("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
         deleteHandlerMaker("customer", data[user]["account_no"]));
       content += "</div>";
@@ -508,10 +516,10 @@ function checkNewBookForm() {
   if (sample != '' && sampleExtension != 'pdf') {
     $('.updateLabel').text('The sample must be a PDF file.');
     return false;
-  } else if ($('#sample')[0].files[0].size > 1000 * 1024) {
+  } else if (sample != '' && $('#sample')[0].files[0].size > 1000 * 1024) {
     $('.updateLabel').text('The sample PDF is too large (must be < 1 MB).');
     return false;
-  }else if (!isPositiveInt($("#copies").val())) {
+  } else if (!isPositiveInt($("#copies").val())) {
     $(".updateLabel").text('Copies field must be a positive integer.');
     return false;
   } else if ($("#isbn").val() == '') {
@@ -530,6 +538,9 @@ $(".cancel").click(function() {
 });
 
 var isPositiveInt = function(str) {
+  if (str == null || str == '') {
+    return false;
+  }
   // Regex check
   return /^[1-9][0-9]*$/.test(str);
 }
