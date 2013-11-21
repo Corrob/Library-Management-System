@@ -508,8 +508,11 @@ function checkNewBookForm() {
   if (sample != '' && sampleExtension != 'pdf') {
     $('.updateLabel').text('The sample must be a PDF file.');
     return false;
-  } else if (!isPositiveInt($("#copies").val())) {
-    $(".updateLabel").text('Copies field must be an integer.');
+  } else if ($('#sample')[0].files[0].size > 1000 * 1024) {
+    $('.updateLabel').text('The sample PDF is too large (must be < 1 MB).');
+    return false;
+  }else if (!isPositiveInt($("#copies").val())) {
+    $(".updateLabel").text('Copies field must be a positive integer.');
     return false;
   } else if ($("#isbn").val() == '') {
     $(".updateLabel").text('A book must have an ISBN.');

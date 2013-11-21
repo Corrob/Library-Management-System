@@ -169,15 +169,15 @@ module.exports = {
     });
   },
 
-  getCoverByIsbn: function(data, callback) {
-    queryDatabase(getCoverByISBNQuery(data),
+  getCoverAndSampleByIsbn: function(data, callback) {
+    queryDatabase(getCoverAndSampleByISBNQuery(data),
         function(err, results) {
       if (err) {
         callback(false, "");
       }
 
       if (results.rows.length > 0) {
-        callback(true, results.rows[0].cover);
+        callback(true, results.rows[0].cover, results.rows[0].sample);
       } else {
         callback(false, "");
       }
@@ -365,8 +365,8 @@ getRemoveFromCheckoutBooksQuery = function(table, username, isbn) {
   return query;
 };
 
-getCoverByISBNQuery = function(data) {
-  return "SELECT cover FROM book WHERE isbn='" + data.isbn + "';";
+getCoverAndSampleByISBNQuery = function(data) {
+  return "SELECT cover,sample FROM book WHERE isbn='" + data.isbn + "';";
 };
 
 getBookDetailsQuery = function(table, isbn) {

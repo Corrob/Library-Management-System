@@ -89,7 +89,15 @@ exports.new_book = function(req, res) {
   // Double check image size
   if (req.files.cover != null &&
     req.files.cover.size > 1000 * 1024) {
-    console.log("File too large.");
+    console.log("Image file too large.");
+    res.json({completed: false});
+    return;
+  }
+
+  // Double check pdf size
+  if (req.files.sample != null &&
+    req.files.sample.size > 1000 * 1024) {
+    console.log("PDF file too large.");
     res.json({completed: false});
     return;
   }
@@ -132,7 +140,7 @@ exports.new_book = function(req, res) {
     console.log();
   } else {
     req.body.cover = "/images/no_cover.png";
-    addBookToDB(req, res);
+    uploadPdfToS3(req, res);
   }
 };
 
@@ -150,6 +158,24 @@ function uploadToS3(req, res) {
   }); 
   uploader.on('end', function(url) {
     req.body.cover = url;
+    uploadPdfToS3(req, res);
+  });
+}
+
+function uploadPdfToS3(req, res) {
+  var headers = {
+    'Content-Type' : req.files.sample.type,
+    'x-amz-acl'    : 'public-read'
+  };
+
+  var uploader = client.upload(req.files.sample.path, 
+    req.body.isbn + Math.floor(Math.random()*10000000) + '.pdf', headers);
+  uploader.on('error', function(err) {
+    console.error("unable to upload:", err.stack);
+    res.json({completed: false});
+  }); 
+  uploader.on('end', function(url) {
+    req.body.sample = url;
     addBookToDB(req, res);
   });
 }
@@ -220,19 +246,19 @@ exports.delete_customer = function(req, res) {
 };
 
 exports.delete_book = function(req, res) {
-  database.getCoverByIsbn(req.body, function(success, cover) {
+  database.getCoverAndSampleByIsbn(req.body, function(success, cover, sample) {
     if (!success) {
       res.json({deleted: false});
     } else {
       if (cover == "/images/no_cover.png") {
-        finishDeleteBook(req, res);
+        deleteSample(req, res, sample);
       } else {
         cover = removeAmazonUrl(cover); 
         knoxClient.deleteFile(cover, function(err, resTwo){
           if (err) {
             res.json({deleted: false});
           }
-          finishDeleteBook(req, res);
+          deleteSample(req, res, sample);
         });
       }
     }
@@ -247,6 +273,20 @@ function removeAmazonUrl(url) {
   }
   return url;
 };
+
+function deleteSample(req, res, sample) {
+  if (sample == '') {
+    finishDeleteBook(req, res);
+  } else {
+    sample = removeAmazonUrl(sample); 
+    knoxClient.deleteFile(sample, function(err, resTwo){
+      if (err) {
+        res.json({deleted: false});
+      }
+      finishDeleteBook(req, res);
+    });
+  }
+}
 
 function finishDeleteBook(req, res) {
   database.deleteData(req.body, "book", function(success) {
