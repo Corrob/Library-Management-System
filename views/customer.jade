@@ -88,8 +88,11 @@ block content
               label(for="copies" class="inputLineLabels") Copies:
               input(type="text", id="copies", name="copies", style="display: inline-block;", class="formTextbox")
             .inputLines
-              label(for="cover" id="coverLabel") Cover Image:
-              input(type="file", name="cover", id="cover", onchange="fileSelectHandler()");
+              label(for="cover" id="coverLabel" class="inputLineLabels") Cover Image:
+              input(type="file", name="cover", id="cover", onchange="fileSelectHandler()")
+            .inputLines
+              label(for="sample", id="sampleLabel", class="inputLineLabels") PDF Sample:
+              input(type="file", name="sample", id="sample")
             button(type="submit" id="submit_new_book" class="optionButtons hiddenFormButtons") Submit New Book
             button(class="optionButtons hiddenFormButtons cancel") Cancel
       #options

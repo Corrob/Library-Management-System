@@ -17,3 +17,7 @@ $(document).keypress(function(e) {
     loginFunc();
   }
 });
+
+$(document).ready(function() {
+  $("#username").focus();
+});

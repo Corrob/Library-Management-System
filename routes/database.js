@@ -4,391 +4,247 @@ var dbString = process.env.DATABASE_URL || "postgres://node:pass@localhost:5432/
 
 module.exports = {
   verifyLogin: function(username, password, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getLoginQuery(username, password), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
-      }
-
-      client.query(getLoginQuery(username, password), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error checking username and password', err);
-        }
-
+      } else {
         if (results.rows.length > 0) {
           callback(true);
         } else {
           callback(false);
         }
-      });
+      }
     });
   },
 
   isAdmin: function(username, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getAdminQuery(username), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
-      }
-
-      client.query(getAdminQuery(username), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error checking admin username', err);
-        }
-
+      } else {
         if (results.rows.length > 0) {
           callback(results.rows[0].admin);
         } else {
           callback(false);
         }
-      });
+      }
     });
   },
 
   checkData: function(data, table, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getCheckDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false, true);
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getCheckDataQuery(data, table), function(err, results) {
-        done();
-        if (err) {
-          callback(false, true);
-          return console.error('error checking data', err);
-        }
-
-        if (results.rows.length > 0) {
-          callback(true, false);
-        } else {
-          callback(false, false);
-        }
-      });
+      if (results.rows.length > 0) {
+        callback(true, false);
+      } else {
+        callback(false, false);
+      }
     });
   },
 
   deleteData: function(data, table, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getDeleteDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
       }
-
-      client.query(getDeleteDataQuery(data, table), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error checking data', err);
-        }
-        
-        callback(results.rowCount == 1);
-      });
+      
+      callback(results.rowCount == 1);
     });
   },
 
   addNewData: function(data, table, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getNewDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getNewDataQuery(data, table), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error adding data', err);
-        }
-
-        callback(true);
-      });
+      callback(true);
     });
   },
 
   updateBook: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getUpdateDataQuery(data, data.isbn, "book"), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getUpdateDataQuery(data, data.isbn, "book"), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error updating data', err);
-        }
-
-        callback(true);
-      });
+      callback(true);
     });
   },
 
   updateUser: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getUpdateDataQuery(data, data.username, "customer"), function(err, results) {
       if (err) {
         callback(false);
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getUpdateDataQuery(data, data.username, "customer"), function(err, results) {
-        done();
-        if (err) {
-          callback(false);
-          return console.error('error updating data', err);
-        }
-
-        callback(true);
-      });
+      callback(true);
     });
   },
 
   getMaxAccountNo: function(callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getMaxAccountNoQuery(), function(err, results) {
       if (err) {
         callback(-1);
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getMaxAccountNoQuery(), function(err, results) {
-        done();
-        if (err) {
-          callback(-1);
-          return console.error('error adding data', err);
-        }
-
-        if (results.rows.length > 0) {
-          callback(results.rows[0].max);
-        } else {
-          callback(-1);
-        }
-      });
+      if (results.rows.length > 0) {
+        callback(results.rows[0].max);
+      } else {
+        callback(-1);
+      }
     });
   },
 
   getAllBooks: function(callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getAllBooksQuery("book"), function(err, results) {
       if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getAllBooksQuery("book"), function(err, results) {
-        done();
-        if (err) {
-          callback(new Array());
-          return console.error('error reading book table', err);
-        }
-
-        callback(results.rows);
-      });
+      callback(results.rows);
     });
   },
 
   getBooksByKeyword: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getBooksByKeywordQuery("book", data.keywords,
+        data.column), function(err, results) {
       if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getBooksByKeywordQuery("book", data.keywords,
-        data.column), function(err, results) {
-        done();
-        if (err) {
-          callback(new Array());
-          return console.error('error reading book table', err);
-        }
-
-        callback(results.rows);
-      });
+      callback(results.rows);
     });
   },
 
   getAllUsers: function(callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getAllUsersQuery("customer"), function(err, results) {
       if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getAllUsersQuery("customer"), function(err, results) {
-        done();
-        if (err) {
-          callback(new Array());
-          return console.error('error reading customer table', err);
-        }
-
-        callback(results.rows);
-      });
+      callback(results.rows);
     });
   },
 
   getUsersByKey: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getUsersByKeyQuery("customer", data.key, data.column),
+        function(err, results) {
       if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getUsersByKeyQuery("customer", data.key, data.column),
-        function(err, results) {
-          done();
-          if (err) {
-            callback(new Array());
-            return console.error('error reading customer table', err);
-          }
-
-          callback(results.rows);
-        });
+      callback(results.rows);
     }); 
   },
 
   checkIfCheckedout: function(data, callback) {
-    var checkedoutBooks;
-    pg.connect(dbString, function(err, client, done) {
-      if (err) {
-        return console.error('error fetching client from pool', err);
-      }
-
-      client.query(
+    queryDatabase(
         getCheckedoutBookQuery("customer", data.username, data.isbn),
         function(err, results) {
-          done();
-          if (err) {
-            return console.error('error reading customer table', err);
-          }
-          
-          callback(results.rows.length > 0);
-        });
+      if (err) {
+        // TODO: Do something about the error
+      }
+      
+      callback(results.rows.length > 0);
     });
   },
 
   checkoutBook: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getCheckoutQuery("book", data.isbn),
+        function(err, results) {
       if (err) {
-        callback(false, " Error connecting to database!");
-        return console.error('error fetching client from pool', err);
+        callback(false, " Error reading database!");  
+      }
+    });
+
+    queryDatabase(getAddToCheckedoutBooksQuery("customer", data.username,
+        data.isbn), function(err, results) {
+      if (err) {
+        callback(false, " Error reading database!");
       }
 
-      client.query(getCheckoutQuery("book", data.isbn),
-        function(err, results) {
-          done();
-          if (err) {
-            callback(false, " Error reading database!");  
-            return console.error('error reading customer table', err);
-          }
-        });
-
-      client.query(getAddToCheckedoutBooksQuery("customer", data.username,
-        data.isbn), function(err, results) {
-        done();
-        if (err) {
-          callback(false, " Error reading database!");
-          return console.error('error reading customer table', err);
-        }
-
-        callback(true);
-      });
+      callback(true);
     });
   },
 
   returnBook: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+    queryDatabase(getReturnQuery("book", data.isbn),
+        function(err, results) {
       if (err) {
-        callback(false, " Error connecting to database!");
-        return console.error('error fetching client from pool', err);
+        callback(false, " Error reading database!");  
+      }
+    });
+
+    queryDatabase(getRemoveFromCheckoutBooksQuery("customer", data.username,
+        data.isbn), function(err, results) {
+      if (err) {
+        callback(false, " Error reading database!");
       }
 
-      client.query(getReturnQuery("book", data.isbn),
-        function(err, results) {
-          done();
-          if (err) {
-            callback(false, " Error reading database!");  
-            return console.error('error reading customer table', err);
-          }
-        });
-
-      client.query(getRemoveFromCheckoutBooksQuery("customer", data.username,
-        data.isbn), function(err, results) {
-        done();
-        if (err) {
-          callback(false, " Error reading database!");
-          return console.error('error reading customer table', err);
-        }
-
-        callback(true);
-      });
+      callback(true);
     });
   },
 
-  getCoverByIsbn: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
+  getCoverAndSampleByIsbn: function(data, callback) {
+    queryDatabase(getCoverAndSampleByISBNQuery(data),
+        function(err, results) {
       if (err) {
         callback(false, "");
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getCoverByISBNQuery(data),
-        function(err, results) {
-          done();
-          if (err) {
-            callback(false, "");
-            return console.error('error reading book table', err);
-          }
-
-          if (results.rows.length > 0) {
-            callback(true, results.rows[0].cover);
-          } else {
-            callback(false, "");
-            return console.error('error reading book table', err);
-          }
-        });
-    }); 
+      if (results.rows.length > 0) {
+        callback(true, results.rows[0].cover, results.rows[0].sample);
+      } else {
+        callback(false, "");
+      }
+    });
   },
 
   getBookDetails: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
-       if (err) {
+    queryDatabase(getBookDetailsQuery("book", data.isbn), function(err, results) {
+      if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
 
-      client.query(getBookDetailsQuery("book", data.isbn), function(err, results) {
-        done();
-        if (err) {
-          callback(new Array());
-          return console.error('error reading book table', err);
-        }
-
-        callback(results.rows);
-      }); 
-   });
+      callback(results.rows);
+    }); 
   },
 
   getUserDetails: function(data, callback) {
-    pg.connect(dbString, function(err, client, done) {
-       if (err) {
+    queryDatabase(getUserDetailsQuery("customer", data.account_no), function(err, results) {
+      if (err) {
         callback(new Array());
-        return console.error('error fetching client from pool', err);
       }
-      client.query(getUserDetailsQuery("customer", data.account_no), function(err, results) {
-        done();
-        if (err) {
-          callback(new Array());
-          return console.error('error reading customer table', err);
-        }
 
-        callback(results.rows);
-      });
-   });
+      callback(results.rows);
+    });
   }
 };
+
+queryDatabase = function(query, callback) {
+  pg.connect(dbString, function(err, client, done) {
+    if (err) {
+      callback(true);
+      return console.error('error fetching client from pool', err);
+    }
+
+    console.log("Running query to database: " + query);
+
+    client.query(query, function(err, results) {
+      done();
+      if (err) {
+        callback(true);
+        return console.error('error running query', err);
+      }
+
+      callback(false, results);
+    });
+  });
+}
 
 getLoginQuery = function(username, password) {
   return "SELECT username, password FROM customer WHERE username='" + username + "' AND password='" + password + "'";
@@ -529,8 +385,8 @@ getRemoveFromCheckoutBooksQuery = function(table, username, isbn) {
   return query;
 };
 
-getCoverByISBNQuery = function(data) {
-  return "SELECT cover FROM book WHERE isbn='" + data.isbn + "';";
+getCoverAndSampleByISBNQuery = function(data) {
+  return "SELECT cover,sample FROM book WHERE isbn='" + data.isbn + "';";
 };
 
 getBookDetailsQuery = function(table, isbn) {

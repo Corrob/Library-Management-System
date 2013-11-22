@@ -24,7 +24,7 @@ var refreshView = function(type) {
       }
     }
   }, 1000);
-}
+};
 
 var showDetailsHandlerMaker = function(type, identifier) {
   switch(type) {
@@ -56,8 +56,13 @@ var showDetailsHandlerMaker = function(type, identifier) {
                     content += "<span class='bookInfo'><strong>Genre:</strong> "
                                  + data["book0"][info] + "</span>";
                     break;
-                  case "sample":
-                    content += "";
+                  case "sample":              
+                    if (data["book0"][info]  != null
+                         && data["book0"][info] != "") {
+                      content += "<span class='bookInfo'><strong>Sample:</strong> "
+                                   + "<a href='" + data["book0"][info]
+                                   + "' target='_blank'>Link</a></span>";
+                    }
                     break;
                   case "total_copies":
                     content += "<span class='bookInfo'><strong>Total Copies in Library:</strong> "
@@ -66,7 +71,7 @@ var showDetailsHandlerMaker = function(type, identifier) {
                   case "avail_copies":
                     content += "<span class='bookInfo'><strong>Available Copies:</strong> "
                             + data["book0"][info] + "</span>";
-                   break;
+                    break;
                 }
               } 
               content += "<span class='bookInfo'><strong>Description:</strong> </span>"
@@ -82,6 +87,7 @@ var showDetailsHandlerMaker = function(type, identifier) {
                   isUpdate = true;
                   $("#new_book_form").show();
                   $("#coverLabel").text("Change Cover Image:");
+                  $("#sampleLabel").text("Change PDF Sample:");
                   $("#submit_new_book").text("Save Changes");
                   $("form#new_book_form").children().each(
                     function() {
@@ -97,11 +103,13 @@ var showDetailsHandlerMaker = function(type, identifier) {
                       } else if ($(this).attr("name") == "isbn") {
                         $(this).attr("readonly", true);
                         $(this).val(data["book0"][$(this).attr("name")]);
-                      } else if ($(this).attr("name") != "cover") {
+                      } else if ($(this).attr("name") != "cover" 
+                                 && $(this).attr("name") != "sample") {
                         $(this).val(data["book0"][$(this).attr("name")]);
                       }
                     }
                   });
+                  updateNewBookForm();
                 });
               }
               content += "<button id='backBooks'"
@@ -395,6 +403,8 @@ var printBookData = function(data) {
             content += "<a class='bookTitle' id='showBookDetails"  + data[book]["isbn"]
                     + "'>" + data[book][info]
                     + "</a>";
+            $("#bookShelf").off("click", "#showBookDetails"
+              + data[book]["isbn"]);
             $("#bookShelf").on("click", "#showBookDetails"
               + data[book]["isbn"], 
               showDetailsHandlerMaker("book", data[book]["isbn"]));
@@ -409,6 +419,7 @@ var printBookData = function(data) {
         content += "<button id='deleteBook" + data[book]["isbn"]
                 + "' class='optionButtons'>Delete"
                 + "</button>";
+        $("#bookShelf").off("click", "#deleteBook" + data[book]["isbn"]);
         $("#bookShelf").on("click", "#deleteBook" + data[book]["isbn"],
           deleteHandlerMaker("book", data[book]["isbn"]));
       } else {
@@ -456,6 +467,8 @@ var printUserData = function(data) {
             content += "<a class='accountNumber' id='showUserDetails"
                     + data[user][info] + "'>ID: " + data[user][info]
                     + "</a>";
+            $("#bookShelf").off("click", "#showUserDetails"
+              + data[user][info]);
             $("#bookShelf").on("click", "#showUserDetails"
               + data[user][info], 
               showDetailsHandlerMaker("customer", data[user][info]));
@@ -482,6 +495,7 @@ var printUserData = function(data) {
               + "' class='optionButtons'>Delete"
               + "</button>";
 
+      $("#bookShelf").off("click", "#deleteUser" + data[user]["account_no"]);
       $("#bookShelf").on("click", "#deleteUser" + data[user]["account_no"],
         deleteHandlerMaker("customer", data[user]["account_no"]));
       content += "</div>";
@@ -504,12 +518,15 @@ $("#logout").click(function() {
 
 $("#new_customer").click(function() {
   clearHiddenForms();
+  isUpdate = false;
+  updateNewBookForm();
   $("#new_customer_form").show();
 });
 
 $("#new_book").click(function() {
   clearHiddenForms();
   isUpdate = false;
+  updateNewBookForm();
   $("#new_book_form").show();
 });
 
@@ -532,7 +549,7 @@ $("#submit_new_customer").click(function() {
           $("#bookShelf").scrollTop(0);
           if (isUpdate) {
             $("#bookShelfUpdateLabel")
-            .text("Customer updated added! Updating list...");
+            .text("Customer successfully updated! Updating list...");
           } else {
             $("#bookShelfUpdateLabel")
             .text("Customer successfully added! Updating list...");
@@ -552,8 +569,17 @@ $("#submit_new_customer").click(function() {
 });
 
 function checkNewBookForm() {
-  if (!isPositiveInt($("#copies").val())) {
-    $(".updateLabel").text('Copies field must be an integer.');
+  var sample = $('#sample').val();
+  var sampleExtension = sample.split('.').pop();
+
+  if (sample != '' && sampleExtension != 'pdf') {
+    $('.updateLabel').text('The sample must be a PDF file.');
+    return false;
+  } else if (sample != '' && $('#sample')[0].files[0].size > 1000 * 1024) {
+    $('.updateLabel').text('The sample PDF is too large (must be < 1 MB).');
+    return false;
+  } else if (!isPositiveInt($("#copies").val())) {
+    $(".updateLabel").text('Copies field must be a positive integer.');
     return false;
   } else if ($("#isbn").val() == '') {
     $(".updateLabel").text('A book must have an ISBN.');
@@ -568,9 +594,13 @@ function checkNewBookForm() {
 
 $(".cancel").click(function() {
   clearHiddenForms();
+  isUpdate = false;
 });
 
 var isPositiveInt = function(str) {
+  if (str == null || str == '') {
+    return false;
+  }
   // Regex check
   return /^[1-9][0-9]*$/.test(str);
 }
@@ -578,7 +608,8 @@ var isPositiveInt = function(str) {
 var clearHiddenForms = function() {
   $("#submit_new_book").text("Submit New Book");
   $("#submit_new_customer").text("Submit New Customer");
-  $("#coverLabel").text("Change Image:");
+  $("#coverLabel").text("Cover Image:");
+  $("#sampleLabel").text("PDF Sample:");
   $("form#new_book_form #isbn").attr("readonly", false);
   $("#username").attr("readonly", false);
 
@@ -779,9 +810,7 @@ $("#bookShelf").on("click", "#backUsers", function() {
   }
 });
 
-$(document).ready(function() {
-  loadBooks();
-
+var updateNewBookForm = function() {
   // Make new book with form ajax
   $('#new_book_form').ajaxForm({
   data: {update: isUpdate},
@@ -805,5 +834,10 @@ $(document).ready(function() {
       }
     }
   }});
+};
+
+$(document).ready(function() {
+  loadBooks();
+  updateNewBookForm();
 });
 

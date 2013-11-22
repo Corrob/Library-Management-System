@@ -23,7 +23,7 @@
 }
 
 #contentContainer {
-  height: 698px;
+  height: 723px;
 }
 
 #content {
@@ -38,7 +38,7 @@
   display: block;
   border: 1px solid;
   width: 400px;
-  height: 600px;
+  height: 625px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -50,7 +50,7 @@
   position: relative;
   border: 1px solid;
   width: 300px;
-  height: 600px;
+  height: 625px;
 }
 
 #options {
@@ -59,7 +59,7 @@
   border-left: 1px solid;
   float: right;
   clear: right;
-  height: 688px;
+  height: 713px;
   text-align: center;
 }
 
@@ -204,6 +204,13 @@ label.inputLineLabels {
 #coverLabel {
   display: inline-block;
   text-align: center;
+  width: 140px;
+}
+
+#sampleLabel {
+  display: inline-block;
+  text-align: center;
+  width: 140px;
 }
 
 /* CSS for search bar taken from html-generator.weebly.com */
