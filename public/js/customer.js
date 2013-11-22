@@ -587,6 +587,12 @@ function checkNewBookForm() {
   } else if (!canSubmitNewBook) {
     $(".updateLabel").text('Cannot submit invalid image. Please upload a valid image (jpg/png and <1 MB).');
     return false;
+  } else if ($('#isbn').val().indexOf("'") != -1 || $('#isbn').val().indexOf('"') != -1) {
+    $(".updateLabel").text('ISBN cannot contain quotes.');
+    return false;
+  } else if ($('#title').val() == '') {
+    $(".updateLabel").text('A book msut have a title.');
+    return false;
   } else {
     return true;
   }
