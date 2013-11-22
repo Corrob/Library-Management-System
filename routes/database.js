@@ -247,11 +247,11 @@ queryDatabase = function(query, callback) {
 }
 
 getLoginQuery = function(username, password) {
-  return "SELECT username, password FROM customer WHERE username='" + username + "' AND password='" + password + "'";
+  return "SELECT username, password FROM customer WHERE username='" + strEscape(username) + "' AND password='" + strEscape(password) + "'";
 };
 
 getAdminQuery = function(username) {
-  return "SELECT username, admin FROM customer WHERE username='" + username + "'";
+  return "SELECT username, admin FROM customer WHERE username='" + strEscape(username) + "'";
 };
 
 getCheckDataQuery = function(data, table) {
@@ -267,7 +267,7 @@ getCheckDataQuery = function(data, table) {
 
   // Add column values to query
   for (var dataName in data) {
-    query += dataName + "='" + data[dataName] + "' AND ";
+    query += dataName + "='" + strEscape(data[dataName]) + "' AND ";
   }
   query = query.substring(0, query.length - 5); // Remove last AND
 
@@ -282,7 +282,7 @@ getDeleteDataQuery = function(data, table) {
 
   // Add column values to query
   for (var dataName in data) {
-    query += dataName + "='" + data[dataName] + "' AND ";
+    query += dataName + "='" + strEscape(data[dataName]) + "' AND ";
   }
   query = query.substring(0, query.length - 5); // Remove last AND
 
@@ -303,7 +303,7 @@ getNewDataQuery = function(data, table) {
 
   // Add column values to query
   for (var dataName in data) {
-    query += "'" + data[dataName] + "',";
+    query += "'" + strEscape(data[dataName]) + "',";
   }
   query = query.substring(0, query.length - 1); // Remove last comma
 
@@ -325,7 +325,7 @@ getAllBooksQuery = function(table) {
 
 getBooksByKeywordQuery = function(table, keywords, column) {
   var query = "SELECT cover, isbn, title, author, description, avail_copies FROM " + table
-            + " WHERE position('" + keywords + "' in upper(" + column
+            + " WHERE position('" + strEscape(keywords) + "' in upper(" + column
             + ")) > 0";
 
   query += ";";
@@ -342,13 +342,13 @@ getAllUsersQuery = function(table) {
 getUsersByKeyQuery = function(table, key, column) {
   var query = "SELECT account_no, username, last_name, first_name, admin FROM"
             + " " + table
-            + " WHERE " + column + " = " + "'" + key + "';";
+            + " WHERE " + column + " = " + "'" + strEscape(key) + "';";
   return query;
 };
 
 getCheckedoutBookQuery = function(table, username, isbn) {
   var query = "SELECT * FROM " + table
-            + " WHERE username = '" + username + "' AND '" + isbn + "' = ANY "
+            + " WHERE username = '" + strEscape(username) + "' AND '" + strEscape(isbn) + "' = ANY "
             + "(books_checked_out)";
   query += ";";
   return query;
@@ -356,21 +356,21 @@ getCheckedoutBookQuery = function(table, username, isbn) {
 
 getCheckoutQuery = function(table, isbn) {
   var query = "UPDATE " + table + " SET avail_copies = avail_copies - 1 WHERE "
-            + "isbn = '" + isbn + "' AND avail_copies > 0";
+            + "isbn = '" + strEscape(isbn) + "' AND avail_copies > 0";
   query += ";";
   return query;
 };
 
 getReturnQuery = function(table, isbn) {
   var query = "UPDATE " + table + " SET avail_copies = avail_copies + 1 WHERE "
-            + "isbn = '" + isbn + "' AND avail_copies > 0";
+            + "isbn = '" + strEscape(isbn) + "' AND avail_copies > 0";
   query += ";";
   return query;
 };
 
 getAddToCheckedoutBooksQuery = function(table, username, isbn) {
   var query = "UPDATE " + table + " SET books_checked_out = array_append("
-            + "books_checked_out, '" + isbn + "') WHERE username = '" + username
+            + "books_checked_out, '" + strEscape(isbn) + "') WHERE username = '" + strEscape(username)
             + "'";
   query += ";";
   return query;
@@ -379,26 +379,26 @@ getAddToCheckedoutBooksQuery = function(table, username, isbn) {
 getRemoveFromCheckoutBooksQuery = function(table, username, isbn) {
   var query = "UPDATE " + table
       + " SET books_checked_out = array(select x from unnest(books_checked_out) x where x <> '"
-      + isbn + "') WHERE username = '" + username
+      + strEscape(isbn) + "') WHERE username = '" + strEscape(username)
       + "'";
   query += ";";
   return query;
 };
 
 getCoverAndSampleByISBNQuery = function(data) {
-  return "SELECT cover,sample FROM book WHERE isbn='" + data.isbn + "';";
+  return "SELECT cover,sample FROM book WHERE isbn='" + strEscape(data.isbn) + "';";
 };
 
 getBookDetailsQuery = function(table, isbn) {
   var query = "SELECT * FROM " + table + " WHERE isbn ='"
-            + isbn + "'";
+            + strEscape(isbn) + "'";
   query += ";";
   return query;
 };
 
 getUserDetailsQuery = function(table, accountNumber) {
-  var query = "SELECT * FROM " + table + " WHERE account_no ="
-            + accountNumber;
+  var query = "SELECT * FROM " + strEscape(table) + " WHERE account_no ="
+            + strEscape(accountNumber);
   query += ";";
   return query;
 };
@@ -409,7 +409,7 @@ getUpdateDataQuery = function(data, identifier, table) {
     if (column != "isbn" && column != "username") {
       query += column + " = ";
       if (column != "avail_copies" && column != "total_copies") {
-        query += "'" + data[column] + "'"; 
+        query += "'" + strEscape(data[column]) + "'"; 
       } else {
         query += data[column];
       }
@@ -423,8 +423,33 @@ getUpdateDataQuery = function(data, identifier, table) {
   } else {
     query += "username =";
   }
-  query += " '" + identifier + "'";
+  query += " '" + strEscape(identifier) + "'";
   query += ";";
 
   return query;
 };
+
+function strEscape (str) {
+  return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+    switch (char) {
+      case "\0":
+        return "\\0";
+      case "\x08":
+        return "\\b";
+      case "\x09":
+        return "\\t";
+      case "\x1a":
+        return "\\z";
+      case "\n":
+        return "\\n";
+      case "\r":
+        return "\\r";
+      case "'":
+        return "''";
+      case "\"":
+      case "\\":
+      case "%":
+        return "\\"+char; // prepends a backslash to backslash, percent,
+    }
+  });
+}
