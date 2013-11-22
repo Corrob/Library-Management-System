@@ -23,8 +23,7 @@ button {
   border:1px solid #cfcfcf;
   display:inline-block;
   color:#050105;
-  font-family:arial;
-  font-size:15px;
+  font: 15px "Ubuntu", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-weight:bold;
   font-style:normal;
   height:36px;
@@ -52,7 +51,7 @@ button:active {
   display: inline-block;
   margin-top: 2px;
   border: 1px solid #c4c4c4;
-  font-size: 14px;
+  font: 13px "Ubuntu", "Lucida Grande", Helvetica, Arial, sans-serif;
   padding: 4px 4px 4px 4px;
   border-radius: 4px;
   -moz-border-radius: 4px;
@@ -105,7 +104,7 @@ label.radioLabel:before {
 
   margin-right: 10px;  
   position: absolute;  
-  left: 0;  
+  left: 0px;  
   bottom: 1px;  
   background-color: #aaa;  
   box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
@@ -120,7 +119,7 @@ input[type=radio]:checked + label.radioLabel:before {
   color: #f3f3f3;  
   font-size: 30px;  
   text-align: center;  
-  line-height: 18px;  
+  line-height: 17px;  
 }
 
 /* Checkbox input CSS written based on blog post on www.hongkiat.com */
@@ -146,7 +145,7 @@ label.checkBoxLabel:before {
 
   margin-right: 10px;  
   position: absolute;  
-  left: 0;  
+  left: 0px;  
   bottom: 1px;  
   background-color: #aaa;  
   box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  

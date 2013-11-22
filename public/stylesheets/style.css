@@ -1,5 +1,5 @@
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Ubuntu", "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #B5B5B5;
 }
 
@@ -24,4 +24,5 @@ a {
   height: 50px;   /* Height of the footer */
   font-size: 14px;
   text-align: center;
+  text-shadow: 0px 0px 5px #FFFFFF;
 }

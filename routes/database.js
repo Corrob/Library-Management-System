@@ -342,7 +342,13 @@ getAllUsersQuery = function(table) {
 getUsersByKeyQuery = function(table, key, column) {
   var query = "SELECT account_no, username, last_name, first_name, admin FROM"
             + " " + table
-            + " WHERE " + column + " = " + "'" + strEscape(key) + "';";
+            + " WHERE ";
+  if (column == "username") {
+    query += "position('" + strEscape(key) + "' in upper(" + column
+          + ")) > 0";
+  } else {
+    query += column + " = " + "'" + strEscape(key) + "';";
+  }
   return query;
 };
 

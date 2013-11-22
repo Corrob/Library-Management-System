@@ -352,7 +352,7 @@ var performSearch = function(filter, query) {
 
     case "byName":
       $.post('/get_users',
-        {key: query,
+        {key: query.toUpperCase(),
          column: "username"
         },
         function (data, textStatus) {
@@ -739,7 +739,7 @@ $("#filter").click(function() {
                  + "<input type='radio' name='searchFilters' id='userNameOption'"
                  + "value='byName'>"
                  + "<label class='radioLabel' for='userNameOption'>"
-                 + "Customer Name</label></div>";
+                 + "Customer Username</label></div>";
     }
 
     filterHtml += "<div id='filterButtonsContainer'>"
@@ -794,10 +794,12 @@ $("#bookShelf").on("change", "input[name='searchFilters']", function() {
 });
 
 $("#list_books").click(function() {
+  searchShowing = false;
   loadBooks();
 });
 
 $("#list_users").click(function() {
+  searchShowing = false;
   loadCustomers();
 });
 
