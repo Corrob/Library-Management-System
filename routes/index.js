@@ -95,6 +95,40 @@ exports.new_customer = function(req, res) {
 
 // TODO: Update sub functions to use callbacks
 exports.new_book = function(req, res) {
+  if (req.body.update == "true") {
+    if (req.files.cover != null) {
+      database.getCoverAndSampleByIsbn(req.body, function(success, cover, sample) {
+        if (success) {
+          if (cover != "/images/no_cover.png") {
+            cover = removeAmazonUrl(cover);
+            knoxClient.deleteFile(cover, function(err, resTwo){
+              if (err) {
+                console.log("Failed to delete cover: " + cover);
+              } else {
+                console.log("Deleted: " + cover);
+              }
+            });
+          }
+        }
+      });
+    }
+    if (req.files.sample != null) {
+      database.getCoverAndSampleByIsbn(req.body, function(success, cover, sample) {
+        if (success) {
+          if (sample != null && sample != "") {
+            sample = removeAmazonUrl(sample);
+            knoxClient.deleteFile(sample, function(err, resTwo){
+              if (err) {
+                console.log("Failed to delete sample: " + sample);
+              } else {
+                console.log("Deleted: " + sample);
+              }
+            });
+          }
+        }
+      });
+    }
+  }
   // Double check image size
   if (req.files.cover != null &&
     req.files.cover.size > 1000 * 1024) {
@@ -213,14 +247,27 @@ function addBookToDB(req, res) {
 }
 
 function updateBook(req, res) {
+  if (req.files.sample == null) {
+    delete req.body.sample;
+  }
+  if (req.files.cover == null) {
+    delete req.body.cover;
+  }
+
   delete req.body.x1;
   delete req.body.x2;
   delete req.body.y1;
   delete req.body.y2;
   delete req.body.update;
 
-  database.updateBook(req.body, function(success) {
-    res.json({completed: success});
+  database.getBookDetails(req.body, function(data) {
+    if (data.length > 0 && data[0].avail_copies <= req.body.total_copies) {
+      delete req.body.avail_copies;
+    }
+
+    database.updateBook(req.body, function(success) {
+      res.json({completed: success});
+    });
   });
 }
 
