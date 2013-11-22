@@ -93,6 +93,7 @@ exports.new_customer = function(req, res) {
   }
 };
 
+// TODO: Update sub functions to use callbacks
 exports.new_book = function(req, res) {
   // Double check image size
   if (req.files.cover != null &&
@@ -145,7 +146,6 @@ exports.new_book = function(req, res) {
           }
         });
     }
-    console.log();
   } else {
     req.body.cover = "/images/no_cover.png";
     uploadPdfToS3(req, res);
@@ -171,7 +171,6 @@ function uploadToS3(req, res) {
 }
 
 function uploadPdfToS3(req, res) {
-  console.log(req.body);
   if (req.files.sample == null || req.files.sample == '') {
     if (req.body.update == "false") {
       addBookToDB(req, res);

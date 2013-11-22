@@ -35,12 +35,12 @@ module.exports = {
     queryDatabase(getCheckDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false, true);
-      }
-
-      if (results.rows.length > 0) {
-        callback(true, false);
       } else {
-        callback(false, false);
+        if (results.rows.length > 0) {
+          callback(true, false);
+        } else {
+          callback(false, false);
+        }
       }
     });
   },
@@ -49,9 +49,9 @@ module.exports = {
     queryDatabase(getDeleteDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false);
+      } else {
+        callback(results.rowCount == 1);
       }
-      
-      callback(results.rowCount == 1);
     });
   },
 
@@ -59,9 +59,9 @@ module.exports = {
     queryDatabase(getNewDataQuery(data, table), function(err, results) {
       if (err) {
         callback(false);
+      } else {
+        callback(true);
       }
-
-      callback(true);
     });
   },
 
@@ -69,9 +69,9 @@ module.exports = {
     queryDatabase(getUpdateDataQuery(data, data.isbn, "book"), function(err, results) {
       if (err) {
         callback(false);
+      } else {
+        callback(true);
       }
-
-      callback(true);
     });
   },
 
@@ -79,9 +79,9 @@ module.exports = {
     queryDatabase(getUpdateDataQuery(data, data.username, "customer"), function(err, results) {
       if (err) {
         callback(false);
+      } else {
+        callback(true);
       }
-
-      callback(true);
     });
   },
 
@@ -89,12 +89,12 @@ module.exports = {
     queryDatabase(getMaxAccountNoQuery(), function(err, results) {
       if (err) {
         callback(-1);
-      }
-
-      if (results.rows.length > 0) {
-        callback(results.rows[0].max);
       } else {
-        callback(-1);
+        if (results.rows.length > 0) {
+          callback(results.rows[0].max);
+        } else {
+          callback(-1);
+        }
       }
     });
   },
@@ -103,9 +103,9 @@ module.exports = {
     queryDatabase(getAllBooksQuery("book"), function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     });
   },
 
@@ -114,9 +114,9 @@ module.exports = {
         data.column), function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     });
   },
 
@@ -124,9 +124,9 @@ module.exports = {
     queryDatabase(getAllUsersQuery("customer"), function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     });
   },
 
@@ -135,9 +135,9 @@ module.exports = {
         function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     }); 
   },
 
@@ -147,9 +147,9 @@ module.exports = {
         function(err, results) {
       if (err) {
         // TODO: Do something about the error
+      } else {
+        callback(results.rows.length > 0);
       }
-      
-      callback(results.rows.length > 0);
     });
   },
 
@@ -165,9 +165,9 @@ module.exports = {
         data.isbn), function(err, results) {
       if (err) {
         callback(false, " Error reading database!");
+      } else {
+        callback(true);
       }
-
-      callback(true);
     });
   },
 
@@ -183,9 +183,9 @@ module.exports = {
         data.isbn), function(err, results) {
       if (err) {
         callback(false, " Error reading database!");
+      } else {
+        callback(true);
       }
-
-      callback(true);
     });
   },
 
@@ -194,12 +194,12 @@ module.exports = {
         function(err, results) {
       if (err) {
         callback(false, "");
-      }
-
-      if (results.rows.length > 0) {
-        callback(true, results.rows[0].cover, results.rows[0].sample);
       } else {
-        callback(false, "");
+        if (results.rows.length > 0) {
+          callback(true, results.rows[0].cover, results.rows[0].sample);
+        } else {
+          callback(false, "");
+        }
       }
     });
   },
@@ -208,9 +208,9 @@ module.exports = {
     queryDatabase(getBookDetailsQuery("book", data.isbn), function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     }); 
   },
 
@@ -218,9 +218,9 @@ module.exports = {
     queryDatabase(getUserDetailsQuery("customer", data.account_no), function(err, results) {
       if (err) {
         callback(new Array());
+      } else {
+        callback(results.rows);
       }
-
-      callback(results.rows);
     });
   }
 };
