@@ -85,6 +85,7 @@ var showDetailsHandlerMaker = function(type, identifier) {
                 $("#bookShelf").on("click", "#editBook" + data["book0"]["isbn"], function() {
                   clearHiddenForms();
                   isUpdate = true;
+                  shrinkBookshelf();
                   $("#new_book_form").show();
                   $("#coverLabel").text("Change Cover Image:");
                   $("#sampleLabel").text("Change PDF Sample:");
@@ -190,6 +191,7 @@ var showDetailsHandlerMaker = function(type, identifier) {
               $("#bookShelf").on("click", "#editUser" + data["user0"]["account_no"], function() {
                 clearHiddenForms();
                 isUpdate = true;
+                shrinkBookshelf();
                 $("#new_customer_form").show();
                 $("#submit_new_customer").text("Save Changes");
                 $("#admin").prop("checked", data["user0"]["admin"]);
@@ -302,7 +304,20 @@ var checkBookCheckedoutStatus = function(bookIsbn) {
           }
        });
   return result;
-}
+};
+
+var expandBookshelf = function() {
+  $("#content").width($("#contentContainer").width()
+                      - $("#options").outerWidth(true) - 20);
+  $("#bookShelf").width($("#content").width() - 42);
+  $("#filter").width($("#bookShelf").width() + 20);
+};
+
+var shrinkBookshelf = function() {
+  $("#content").width(442);
+  $("#bookShelf").width(400);
+  $("#filter").width(422);
+};
 
 var performSearch = function(filter, query) {
   switch (filter) {
@@ -520,6 +535,7 @@ $("#new_customer").click(function() {
   clearHiddenForms();
   isUpdate = false;
   updateNewBookForm();
+  shrinkBookshelf();
   $("#new_customer_form").show();
 });
 
@@ -527,6 +543,7 @@ $("#new_book").click(function() {
   clearHiddenForms();
   isUpdate = false;
   updateNewBookForm();
+  shrinkBookshelf();
   $("#new_book_form").show();
 });
 
@@ -640,6 +657,7 @@ var clearHiddenForms = function() {
     $(this).val("");
   });
   $(".hiddenForm").hide();
+  expandBookshelf();
   $(".imagePreview").hide();
 };
 
@@ -848,5 +866,6 @@ var updateNewBookForm = function() {
 $(document).ready(function() {
   loadBooks();
   updateNewBookForm();
+  expandBookshelf();
 });
 
