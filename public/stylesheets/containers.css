@@ -22,6 +22,16 @@
   border-bottom: 1px solid;
 }
 
+#userHud {
+  display: inline-block;
+}
+
+#bannerContainer {
+  display: inline-block;
+  padding: 5px 0px 5px 0px;
+  float: left;
+}
+
 #contentContainer {
   height: 723px;
 }

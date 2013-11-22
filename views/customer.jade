@@ -13,14 +13,16 @@ block content
     currentUsername = "#{username}";
   #mainContainer
     #hudContainer
-      if admin
-        p
-          | Welcome, #{username} <strong>(Admin)</strong>
-      else
-        p
-          | Welcome, #{username}
-
-      button(id="logout") Log Out
+      #bannerContainer
+        img(id="banner", src="/images/banner.png")
+      #userHud
+        if admin
+          p
+            | Welcome, #{username} <strong>(Admin)</strong>
+        else
+          p
+            | Welcome, #{username}
+        button(id="logout") Log Out
     #contentContainer
       #content
         button(id="filter") Filter
