@@ -1,0 +1,45 @@
+#optionsLabel {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#descriptionBoxLabel {
+  display: inline-block;
+}
+
+label.inputLineLabels {
+  display: inline-block;
+  text-align: left;
+  width: 100px;
+}
+
+#coverLabel {
+  display: inline-block;
+  text-align: center;
+  width: 140px;
+}
+
+#sampleLabel {
+  display: inline-block;
+  text-align: center;
+  width: 140px;
+}
+
+.searchLabels {
+  display: block;
+  margin-top: 40px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.updateLabel {
+  font-size: 16px;
+  font-style: italic;
+  color: #FF0000;
+}
+
+#bookShelfUpdateLabel {
+  font-size: 16px;
+  font-style: italic;
+  text-shadow: 0px 0px 5px #FFFFFF;
+}
