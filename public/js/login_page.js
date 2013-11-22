@@ -19,5 +19,10 @@ $(document).keypress(function(e) {
 });
 
 $(document).ready(function() {
+  $("#logo").hide().not(function() {
+    return this.complete && $(this).fadeIn(1500);
+  }).bind("load", function() {
+    $(this).fadeIn(1500);
+  });
   $("#username").focus();
 });

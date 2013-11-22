@@ -1,0 +1,216 @@
+/* This button was generated using CSSButtonGenerator.com */
+button {
+  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  box-shadow:inset 0px 1px 0px 0px #ffffff;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #c2c2c2) );
+  background:-moz-linear-gradient( center top, #ededed 5%, #c2c2c2 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#c2c2c2');
+  background-color:#ededed;
+  -webkit-border-top-left-radius:0px;
+  -moz-border-radius-topleft:0px;
+  border-top-left-radius:0px;
+  -webkit-border-top-right-radius:0px;
+  -moz-border-radius-topright:0px;
+  border-top-right-radius:0px;
+  -webkit-border-bottom-right-radius:0px;
+  -moz-border-radius-bottomright:0px;
+  border-bottom-right-radius:0px;
+  -webkit-border-bottom-left-radius:0px;
+  -moz-border-radius-bottomleft:0px;
+  border-bottom-left-radius:0px;
+  text-indent:0;
+  border:1px solid #cfcfcf;
+  display:inline-block;
+  color:#050105;
+  font-family:arial;
+  font-size:15px;
+  font-weight:bold;
+  font-style:normal;
+  height:36px;
+  line-height:36px;
+  width:175px;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:0px 0px 0px #ffffff;
+}
+
+button:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c2c2c2), color-stop(1, #ededed) );
+  background:-moz-linear-gradient( center top, #c2c2c2 5%, #ededed 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c2c2c2', endColorstr='#ededed');
+  background-color:#c2c2c2;
+}
+
+button:active {
+  position:relative;
+  top:1px;
+}
+
+/* CSS for text inputs taken from html-generator.weebly.com */
+.formTextbox {
+  display: inline-block;
+  margin-top: 2px;
+  border: 1px solid #c4c4c4;
+  font-size: 14px;
+  padding: 4px 4px 4px 4px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  box-shadow: 0px 0px 8px #d9d9d9;
+  -moz-box-shadow: 0px 0px 8px #d9d9d9;
+  -webkit-box-shadow: 0px 0px 8px #d9d9d9;
+}
+
+.formTextbox:focus { 
+  outline: none;
+  border: 1px solid #7bc1f7;
+  box-shadow: 0px 0px 8px #7bc1f7;
+  -moz-box-shadow: 0px 0px 8px #7bc1f7;
+  -webkit-box-shadow: 0px 0px 8px #7bc1f7;
+}
+
+.searchBar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  border: 1px solid #c4c4c4;
+  height: 25px;
+  width: 80%;
+  font-size: 16px;
+  font-style: italic;
+}
+
+/* Radio button CSS written based on blog post on www.hongkiat.com */
+label.radioLabel {
+  display: inline-block;  
+  cursor: pointer;  
+  position: relative;  
+  padding-left: 25px;  
+  margin-right: 15px;  
+  font-size: 14px;  
+}
+
+input[type=radio] {  
+  display: none;       
+}  
+
+label.radioLabel:before {  
+  content: "";  
+  display: inline-block;  
+
+  width: 16px;  
+  height: 16px;  
+
+  margin-right: 10px;  
+  position: absolute;  
+  left: 0;  
+  bottom: 1px;  
+  background-color: #aaa;  
+  box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
+}  
+
+label.radioLabel:before {  
+  border-radius: 8px;  
+}  
+
+input[type=radio]:checked + label.radioLabel:before {
+  content: "\2022";
+  color: #f3f3f3;  
+  font-size: 30px;  
+  text-align: center;  
+  line-height: 18px;  
+}
+
+/* Checkbox input CSS written based on blog post on www.hongkiat.com */
+label.checkBoxLabel {
+  display: inline-block;  
+  cursor: pointer;  
+  position: relative;  
+  padding-left: 40px;  
+  margin-right: 15px;  
+  font-size: 14px;  
+}
+
+input[type=checkbox] {  
+  display: none;  
+}
+
+label.checkBoxLabel:before {  
+  content: "";  
+  display: inline-block;  
+
+  width: 16px;  
+  height: 16px;  
+
+  margin-right: 10px;  
+  position: absolute;  
+  left: 0;  
+  bottom: 1px;  
+  background-color: #aaa;  
+  box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
+}  
+
+label.checkBoxLabel:before {
+  border-radius: 3px;
+}
+
+input[type=checkbox]:checked + label.checkBoxLabel:before {
+  content: "\2713";  
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);  
+  font-size: 15px;  
+  color: #f3f3f3;  
+  text-align: center;  
+  line-height: 15px;
+}
+
+.optionButtons {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 160px;
+}
+
+.hiddenFormButtons {
+  width: 200px;
+} 
+
+.filterButtons {
+  margin: 5px 5px 0px 5px;
+  display: inline;
+}
+
+.detailButtons {
+  margin: 5px;
+  display: inline;
+  width: 120px;
+}
+
+#login {
+  font-size:16px;
+  height:50px;
+  line-height:50px;
+  width:150px;
+}
+
+#logout {
+  width: 128px;
+}
+
+#filter {
+  padding: 0px;
+  margin-left: 10px;
+  width: 422px;
+  font-size: 20px;
+}
+
+.descriptionBox {
+  width: 290px;
+  margin-bottom: 10px;
+}
+
+#description {
+  resize: none;
+}

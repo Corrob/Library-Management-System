@@ -708,7 +708,7 @@ $("#filter").click(function() {
     bookShelfContent = $("#bookShelf").html();
     var filterHtml = bookShelfUpdateLabel;
     filterHtml += "<input type='text' id='searchBar'"
-               + "value='Enter query...' class='searchBar'>"
+               + "value='Enter query...' class='formTextbox searchBar'>"
                + "<label class='searchLabels'>Search for books by:</label>"
                + "<div class='radioContainer'>"
                + "<input type='radio' name='searchFilters' id='bookTitleOption'"
@@ -769,6 +769,7 @@ $("#bookShelf").on("focus", "#searchBar", function() {
 $("#bookShelf").on("click", "#cancelSearch", function() {
   $("#bookShelf").html(bookShelfContent);
   searchBarQuery = "";
+  selectedFilter = "";
   searchShowing = false;
 });
 

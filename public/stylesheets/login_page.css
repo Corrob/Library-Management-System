@@ -21,10 +21,13 @@
 
 #update_label {
   display:  block;
+  margin-top: 10px;
+  margin-bottom: 10px;
   margin-left: auto;
   margin-right: auto;
   width:  80%;
   color: #FF0000;
+  text-shadow: 0px 0px 5px #FFFFFF;
   font-style: italic;
 }
 
@@ -32,88 +35,20 @@ div.inputLines {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#logo {
+  display: none;
 }
 
 label, input {
   display: inline-block;
 }
 
-label {
+label.inputLineLabels {
+  display: inline-block;
+  text-align: left;
   width: 100px;
-}
-
-/* This button was generated using CSSButtonGenerator.com */
-button {
-  margin-top: 10px;
-  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-  box-shadow:inset 0px 1px 0px 0px #ffffff;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #c2c2c2) );
-  background:-moz-linear-gradient( center top, #ededed 5%, #c2c2c2 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#c2c2c2');
-  background-color:#ededed;
-  -webkit-border-top-left-radius:0px;
-  -moz-border-radius-topleft:0px;
-  border-top-left-radius:0px;
-  -webkit-border-top-right-radius:0px;
-  -moz-border-radius-topright:0px;
-  border-top-right-radius:0px;
-  -webkit-border-bottom-right-radius:0px;
-  -moz-border-radius-bottomright:0px;
-  border-bottom-right-radius:0px;
-  -webkit-border-bottom-left-radius:0px;
-  -moz-border-radius-bottomleft:0px;
-  border-bottom-left-radius:0px;
-  text-indent:0;
-  border:1px solid #cfcfcf;
-  display:inline-block;
-  color:#050105;
-  font-family:arial;
-  font-size:15px;
-  font-weight:bold;
-  font-style:normal;
-  height:36px;
-  line-height:36px;
-  width:100px;
-  text-decoration:none;
-  text-align:center;
-  text-shadow:0px 0px 0px #ffffff;
-}
-
-button:hover {
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c2c2c2), color-stop(1, #ededed) );
-  background:-moz-linear-gradient( center top, #c2c2c2 5%, #ededed 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c2c2c2', endColorstr='#ededed');
-  background-color:#c2c2c2;
-}
-
-button:active {
-  position:relative;
-  top:1px;
-}
-
-/* CSS for search bar taken from html-generator.weebly.com */
-.formTextbox {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  border: 1px solid #c4c4c4;
-  font-size: 16px;
-  padding: 4px 4px 4px 4px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  box-shadow: 0px 0px 8px #d9d9d9;
-  -moz-box-shadow: 0px 0px 8px #d9d9d9;
-  -webkit-box-shadow: 0px 0px 8px #d9d9d9;
-}
-
-.formTextbox:focus { 
-  outline: none;
-  border: 1px solid #7bc1f7;
-  box-shadow: 0px 0px 8px #7bc1f7;
-  -moz-box-shadow: 0px 0px 8px #7bc1f7;
-  -webkit-box-shadow: 0px 0px 8px #7bc1f7;
 }
