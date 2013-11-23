@@ -436,6 +436,10 @@ getUpdateDataQuery = function(data, identifier, table) {
 };
 
 function strEscape (str) {
+  // Make sure str is a string, if not return it
+  if (!str.substring) {
+    return str;
+  }
   return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
     switch (char) {
       case "\0":
