@@ -316,7 +316,7 @@ var expandBookshelf = function() {
 var shrinkBookshelf = function() {
   $("#content").width(442);
   $("#bookShelf").width(400);
-  $("#filter").width(422);
+  $("#filter").width(420);
 };
 
 var performSearch = function(filter, query) {
