@@ -10,7 +10,8 @@
 label.inputLineLabels {
   display: inline-block;
   text-align: left;
-  width: 90px;
+  font-size: 14px;
+  width: 80px;
 }
 
 #coverLabel {
