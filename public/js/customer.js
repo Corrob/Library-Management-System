@@ -691,6 +691,7 @@ function fileSelectHandler() {
   }
 
   canSubmitNewBook = true;
+  $('.imagePreview').show();
 
   // preview element
   var oImage = document.getElementById('preview');
@@ -707,7 +708,6 @@ function fileSelectHandler() {
         jcrop_api.destroy();
       }
 
-      $('.imagePreview').show();
       $('#preview').Jcrop({
         onChange: updateInfo,
         onSelect: updateInfo,
