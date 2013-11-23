@@ -10,8 +10,6 @@ var loginFunc = function() {
     });
 }
 
-$("#login").click(loginFunc);
-
 $(document).keypress(function(e) {
   if(e.which == 13 && $("input").focus()) {
     loginFunc();
@@ -19,6 +17,7 @@ $(document).keypress(function(e) {
 });
 
 $(document).ready(function() {
+  $("#login").click(loginFunc);
   $("#logo").hide().not(function() {
     return this.complete && $(this).fadeIn(1500);
   }).bind("load", function() {

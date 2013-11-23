@@ -524,67 +524,6 @@ var printUserData = function(data) {
   }
 };
 
-$("#logout").click(function() {
-  $.post('/logout',
-    function(data, textStatus) {
-      window.location.href = data.redirect;
-    });
-});
-
-$("#new_customer").click(function() {
-  clearHiddenForms();
-  isUpdate = false;
-  updateNewBookForm();
-  shrinkBookshelf();
-  $("#new_customer_form").show();
-});
-
-$("#new_book").click(function() {
-  clearHiddenForms();
-  isUpdate = false;
-  updateNewBookForm();
-  shrinkBookshelf();
-  $("#new_book_form").show();
-});
-
-$("#submit_new_customer").click(function() {
-  $.post('/new_customer', {update: isUpdate,
-                           username : $("#username").val(), 
-                           password : $("#password").val(),
-                           last_name : $("#last_name").val(),
-                           first_name : $("#first_name").val(),
-                           street : $("#street").val(),
-                           city : $("#city").val(),
-                           state : $("#state").val(),
-                           zip : $("#zip").val(),
-                           email : $("#email").val(),
-                           admin: $("#admin").prop("checked")},
-    function(data, textStatus) {
-      if (data.completed) {
-        if (!data.exists) {
-          clearHiddenForms();
-          $("#bookShelf").scrollTop(0);
-          if (isUpdate) {
-            $("#bookShelfUpdateLabel")
-            .text("Customer successfully updated! Updating list...");
-          } else {
-            $("#bookShelfUpdateLabel")
-            .text("Customer successfully added! Updating list...");
-          }
-          refreshView("customer");
-        } else {
-          $(".updateLabel").text('Username already exists.');
-        }
-      } else {
-        if (isUpdate) {
-          $(".updateLabel").text('Failed to update customer.');
-        } else {
-          $(".updateLabel").text('Failed to submit new customer.');
-        }
-      }
-    });
-});
-
 function checkNewBookForm() {
   var sample = $('#sample').val();
   var sampleExtension = sample.split('.').pop();
@@ -615,18 +554,13 @@ function checkNewBookForm() {
   }
 }
 
-$(".cancel").click(function() {
-  clearHiddenForms();
-  isUpdate = false;
-});
-
 var isPositiveInt = function(str) {
   if (str == null || str == '') {
     return false;
   }
   // Regex check
   return /^[1-9][0-9]*$/.test(str);
-}
+};
 
 var clearHiddenForms = function() {
   $("#submit_new_book").text("Submit New Book");
@@ -745,117 +679,6 @@ function getRight(el) {
   return ($(window).width() - (el.offset().left + el.outerWidth()));
 }
 
-$("#filter").click(function() {
-  if (!searchShowing) {
-    selectedFilter = "";
-    bookShelfContent = $("#bookShelf").html();
-    var filterHtml = bookShelfUpdateLabel;
-    filterHtml += "<input type='text' id='searchBar'"
-               + "value='Enter query...' class='formTextbox searchBar'>"
-               + "<label class='searchLabels'>Search for books by:</label>"
-               + "<div class='radioContainer'>"
-               + "<input type='radio' name='searchFilters' id='bookTitleOption'"
-               + "value='byTitle'>"
-               + "<label class='radioLabel' for='bookTitleOption'>"
-               + "Book Title</label></div>"
-               + "<div class='radioContainer'>"
-               + "<input type='radio' name='searchFilters' id='bookAuthorOption'"
-               + "value='byAuthor'>"
-               + "<label class='radioLabel' for='bookAuthorOption'>"
-               + "Author Name</label></div>";
-               
-    if (adminBoolean) {
-      filterHtml += "<label class='searchLabels'>"
-                 + "Search for customers by:</label>"
-                 + "<div class='radioContainer'>"
-                 + "<input type='radio' name='searchFilters' id='userIdOption'"
-                 + "value='byId'>"
-                 + "<label class='radioLabel' for='userIdOption'>"
-                 + "Customer ID</label></div>"
-                 + "<div class='radioContainer'>"
-                 + "<input type='radio' name='searchFilters' id='userNameOption'"
-                 + "value='byName'>"
-                 + "<label class='radioLabel' for='userNameOption'>"
-                 + "Customer Username</label></div>";
-    }
-
-    filterHtml += "<div id='filterButtonsContainer'>"
-               + "<button id='search' class='optionButtons filterButtons'>"
-               +  "Search</button>"
-               +  "<button id='cancelSearch' class='optionButtons filterButtons'>"
-               +  "Cancel</button></div>";
-
-    $("#bookShelf").html(filterHtml); 
-    searchShowing = true;
-  } else {
-    $("#bookShelf").html(bookShelfContent);
-    searchShowing = false;
-  }
-});
-
-$("#bookShelf").on("focus", "#searchBar", function() {
-  $(this).css('color', '#666666');
-  $(this).focus(function() {
-    if(this.value == searchBarDefault) {
-      this.value = "";
-      $(this).css("color", "#333333");
-    }
-  });
-  $(this).blur(function() {
-    if(this.value == "") {
-      $(this).css("color", "#666666");
-      this.value = searchBarDefault;
-    }
-  });
-});
-
-$("#bookShelf").on("click", "#cancelSearch", function() {
-  $("#bookShelf").html(bookShelfContent);
-  searchBarQuery = "";
-  selectedFilter = "";
-  searchShowing = false;
-});
-
-$("#bookShelf").on("click", "#search", function() {
-  searchBarQuery = $("#searchBar").val();
-  performSearch(selectedFilter, searchBarQuery);
-});
-
-/* Set selectedFilter to the selected filter by user. */
-$("#bookShelf").on("change", "input[name='searchFilters']", function() {
-  $("#bookShelf").children(".radioContainer").each(function() {
-    if ($(this).children("input:radio").prop("checked")) {
-      selectedFilter = $(this).children("input:radio").val();
-    }
-  });
-});
-
-$("#list_books").click(function() {
-  searchShowing = false;
-  loadBooks();
-});
-
-$("#list_users").click(function() {
-  searchShowing = false;
-  loadCustomers();
-});
-
-$("#bookShelf").on("click", "#backBooks", function() {
-  if (selectedFilter && searchBarQuery) {
-    performSearch(selectedFilter, searchBarQuery);
-  } else {
-    loadBooks();
-  }
-});
-
-$("#bookShelf").on("click", "#backUsers", function() {
-  if (selectedFilter && searchBarQuery) {
-    performSearch(selectedFilter, searchBarQuery);
-  } else {
-    loadCustomers();
-  }
-});
-
 var updateNewBookForm = function() {
   // Make new book with form ajax
   $('#new_book_form').ajaxForm({
@@ -883,6 +706,180 @@ var updateNewBookForm = function() {
 };
 
 $(document).ready(function() {
+  $(".cancel").click(function() {
+    clearHiddenForms();
+    isUpdate = false;
+  });
+  $("#logout").click(function() {
+    $.post('/logout',
+      function(data, textStatus) {
+        window.location.href = data.redirect;
+      });
+  });
+
+  $("#new_customer").click(function() {
+    clearHiddenForms();
+    isUpdate = false;
+    updateNewBookForm();
+    shrinkBookshelf();
+    $("#new_customer_form").show();
+  });
+
+  $("#new_book").click(function() {
+    clearHiddenForms();
+    isUpdate = false;
+    updateNewBookForm();
+    shrinkBookshelf();
+    $("#new_book_form").show();
+  });
+
+  $("#submit_new_customer").click(function() {
+    $.post('/new_customer', {update: isUpdate,
+                             username : $("#username").val(), 
+                             password : $("#password").val(),
+                             last_name : $("#last_name").val(),
+                             first_name : $("#first_name").val(),
+                             street : $("#street").val(),
+                             city : $("#city").val(),
+                             state : $("#state").val(),
+                             zip : $("#zip").val(),
+                             email : $("#email").val(),
+                             admin: $("#admin").prop("checked")},
+      function(data, textStatus) {
+        if (data.completed) {
+          if (!data.exists) {
+            clearHiddenForms();
+            $("#bookShelf").scrollTop(0);
+            if (isUpdate) {
+              $("#bookShelfUpdateLabel")
+              .text("Customer successfully updated! Updating list...");
+            } else {
+              $("#bookShelfUpdateLabel")
+              .text("Customer successfully added! Updating list...");
+            }
+            refreshView("customer");
+          } else {
+            $(".updateLabel").text('Username already exists.');
+          }
+        } else {
+          if (isUpdate) {
+            $(".updateLabel").text('Failed to update customer.');
+          } else {
+            $(".updateLabel").text('Failed to submit new customer.');
+          }
+        }
+      });
+  });
+  $("#filter").click(function() {
+    if (!searchShowing) {
+      selectedFilter = "";
+      bookShelfContent = $("#bookShelf").html();
+      var filterHtml = bookShelfUpdateLabel;
+      filterHtml += "<input type='text' id='searchBar'"
+                 + "value='Enter query...' class='formTextbox searchBar'>"
+                 + "<label class='searchLabels'>Search for books by:</label>"
+                 + "<div class='radioContainer'>"
+                 + "<input type='radio' name='searchFilters' id='bookTitleOption'"
+                 + "value='byTitle'>"
+                 + "<label class='radioLabel' for='bookTitleOption'>"
+                 + "Book Title</label></div>"
+                 + "<div class='radioContainer'>"
+                 + "<input type='radio' name='searchFilters' id='bookAuthorOption'"
+                 + "value='byAuthor'>"
+                 + "<label class='radioLabel' for='bookAuthorOption'>"
+                 + "Author Name</label></div>";
+                 
+      if (adminBoolean) {
+        filterHtml += "<label class='searchLabels'>"
+                   + "Search for customers by:</label>"
+                   + "<div class='radioContainer'>"
+                   + "<input type='radio' name='searchFilters' id='userIdOption'"
+                   + "value='byId'>"
+                   + "<label class='radioLabel' for='userIdOption'>"
+                   + "Customer ID</label></div>"
+                   + "<div class='radioContainer'>"
+                   + "<input type='radio' name='searchFilters' id='userNameOption'"
+                   + "value='byName'>"
+                   + "<label class='radioLabel' for='userNameOption'>"
+                   + "Customer Username</label></div>";
+      }
+
+      filterHtml += "<div id='filterButtonsContainer'>"
+                 + "<button id='search' class='optionButtons filterButtons'>"
+                 +  "Search</button>"
+                 +  "<button id='cancelSearch' class='optionButtons filterButtons'>"
+                 +  "Cancel</button></div>";
+
+      $("#bookShelf").html(filterHtml); 
+      searchShowing = true;
+    } else {
+      $("#bookShelf").html(bookShelfContent);
+      searchShowing = false;
+    }
+  });
+
+  $("#bookShelf").on("focus", "#searchBar", function() {
+    $(this).css('color', '#666666');
+    $(this).focus(function() {
+      if(this.value == searchBarDefault) {
+        this.value = "";
+        $(this).css("color", "#333333");
+      }
+    });
+    $(this).blur(function() {
+      if(this.value == "") {
+        $(this).css("color", "#666666");
+        this.value = searchBarDefault;
+      }
+    });
+  });
+
+  $("#bookShelf").on("click", "#cancelSearch", function() {
+    $("#bookShelf").html(bookShelfContent);
+    searchBarQuery = "";
+    selectedFilter = "";
+    searchShowing = false;
+  });
+
+  $("#bookShelf").on("click", "#search", function() {
+    searchBarQuery = $("#searchBar").val();
+    performSearch(selectedFilter, searchBarQuery);
+  });
+
+  /* Set selectedFilter to the selected filter by user. */
+  $("#bookShelf").on("change", "input[name='searchFilters']", function() {
+    $("#bookShelf").children(".radioContainer").each(function() {
+      if ($(this).children("input:radio").prop("checked")) {
+        selectedFilter = $(this).children("input:radio").val();
+      }
+    });
+  });
+
+  $("#list_books").click(function() {
+    searchShowing = false;
+    loadBooks();
+  });
+
+  $("#list_users").click(function() {
+    searchShowing = false;
+    loadCustomers();
+  });
+
+  $("#bookShelf").on("click", "#backBooks", function() {
+    if (selectedFilter && searchBarQuery) {
+      performSearch(selectedFilter, searchBarQuery);
+    } else {
+      loadBooks();
+    }
+  });
+
+  $("#bookShelf").on("click", "#backUsers", function() {
+    if (selectedFilter && searchBarQuery) {
+      performSearch(selectedFilter, searchBarQuery);
+    } else {
+      loadCustomers();
+    }
+  });
   loadBooks();
   updateNewBookForm();
   expandBookshelf();
