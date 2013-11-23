@@ -691,7 +691,6 @@ function fileSelectHandler() {
   }
 
   canSubmitNewBook = true;
-  $('.imagePreview').show();
 
   // preview element
   var oImage = document.getElementById('preview');
@@ -713,10 +712,30 @@ function fileSelectHandler() {
         onSelect: updateInfo,
       }, function(){
         jcrop_api = this;
-        $('.imagePreview').css('right', getRight($('#bookShelf')));
+        var bounds = this.getBounds();
+        var width = bounds[0];
+        var height = bounds[1];
+
+        if (width < 440) {
+          $('.imagePreview').css('left', '');
+          $('.imagePreview').css('right', getRight($('#bookShelf')));
+          var y = 650 - height / 2;
+
+          if (y < 200) {
+            y = 200;
+          }
+
+          $('.imagePreview').css('top', y); 
+        } else {
+          $('.imagePreview').css('right', '');
+          $('.imagePreview').css('left', $('#options').offset().left);
+          $('.imagePreview').css('top', 500); 
+        }
       });
     };
   };
+
+  $('.imagePreview').show();
 
   // read selected file as DataURL
   oReader.readAsDataURL(oFile);
