@@ -33,7 +33,7 @@
 }
 
 #contentContainer {
-  height: 723px;
+  height: 773px;
 }
 
 #content {
@@ -48,7 +48,7 @@
   display: block;
   border: 1px solid;
   width: 400px;
-  height: 625px;
+  height: 675px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -60,7 +60,7 @@
   position: relative;
   border: 1px solid;
   width: 300px;
-  height: 625px;
+  height: 675px;
 }
 
 #options {
@@ -69,7 +69,7 @@
   border-left: 1px solid;
   float: right;
   clear: right;
-  height: 713px;
+  height: 763px;
   text-align: center;
 }
 
